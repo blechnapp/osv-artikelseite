@@ -1,0 +1,199 @@
+<script>
+/* OSVArtikelseite: Zubehör (302) und Empfehlungen (303), Ausführungen mit Namen, Brotkrumen.
+ * Kein MutationObserver, kein Vue.component, kein ceresStore (siehe CERES_FRONTEND.md).
+ * Variantenwechsel über das Ceres-Ereignis onVariationChanged. */
+(function () {
+  var C = {{ einstellungJson|raw }};
+  var korb = document.querySelector(".widget-add-to-basket");
+  if (!korb || !document.querySelector(".widget-item-image")) return;
+
+  function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+
+  // Varianten des Artikels: Ceres legt sie als JSON-Liste in die Seite (für die Merkmalsauswahl)
+  function variantenIds() {
+    var s = document.querySelectorAll('script[type="application/json"]');
+    for (var i = 0; i < s.length; i++) {
+      var t = (s[i].textContent || "").trim();
+      if (t.indexOf('[{"variationId"') === 0) {
+        try { return JSON.parse(t).map(function (x) { return x.variationId; }); } catch (e) {}
+      }
+    }
+    return [];
+  }
+  // Gewählte Variante beim Laden: steht in der kanonischen Adresse (…_966_6955/)
+  function startId() {
+    var m = location.pathname.match(/_(\d+)_(\d+)\/?$/);
+    if (m) return +m[2];
+    var l = document.querySelector('link[rel="canonical"]');
+    m = l && l.href.match(/_(\d+)_(\d+)\/?$/);
+    return m ? +m[2] : 0;
+  }
+  var aktuell = startId();
+  var ids = variantenIds();
+  if (aktuell && ids.indexOf(aktuell) < 0) ids.push(aktuell);
+
+  /* ---------- Ausführungen mit Namen ---------- */
+  function namen() {
+    if (!C.namen) return;
+    var boxen = document.querySelectorAll(".widget-attribute .v-s-boxes.images .v-s-box");
+    for (var i = 0; i < boxen.length; i++) {
+      var b = boxen[i], img = b.querySelector("img");
+      if (!img || b.querySelector(".osva-vname")) continue;
+      var s = document.createElement("span");
+      s.className = "osva-vname";
+      s.textContent = img.getAttribute("alt") || "";
+      s.title = s.textContent;
+      b.appendChild(s);
+    }
+  }
+
+  /* ---------- Brotkrumen folgen der Ausführung ---------- */
+  function brotkrumen() {
+    if (!C.brot) return;
+    var h = document.querySelector(".title-outer h1") || document.querySelector(".widget-sticky h1");
+    var b = document.querySelector(".breadcrumb .breadcrumb-item.active span");
+    if (h && b) {
+      var t = (h.textContent || "").replace(/\s+/g, " ").trim();
+      if (t) b.textContent = t;
+    }
+  }
+
+  /* ---------- Zubehör und Empfehlungen ---------- */
+  var daten = null, korbVms = [];
+
+  function kachelOk(t) { return t && t.ok && t.hp; }
+
+  function ga(ereignis, liste, eintraege) {
+    try {
+      var dl = window.dataLayer = window.dataLayer || [];
+      dl.push({ ecommerce: null });
+      dl.push({ event: ereignis, ecommerce: { item_list_name: liste, items: eintraege.map(function (e, i) {
+        return { item_id: e.t.nr, item_name: e.t.n + (e.t.vn ? " " + e.t.vn : ""), price: e.t.pv, index: i, item_list_name: liste };
+      }) } });
+    } catch (x) {}
+  }
+
+  // Warenkorb wie in der Ceres-Kategoriekachel: Ceres' eigener Baustein add-to-basket, an die laufende Ceres-App gehängt (Muster aus OSVSuche 0.12.1)
+  function korbKnopf(ziel, id, t) {
+    var app = window.vueApp, V = window.Vue || (app && app.constructor);
+    if (!app || !app._isMounted || !V) return false;
+    var ceres = app.$ceres || {}, cfg = (window.App && App.config && App.config.item) || {};
+    // Ceres zeigt statt des Korbs einen Pfeil, wenn Mindest- oder Intervallmenge nicht 1 ist; leer oder 0 heißt in Plenty 1
+    var mn = +t.mn > 1 ? +t.mn : 1, iq = +t.iq > 1 ? +t.iq : 1;
+    var p = { variationId: +id, isSalable: !!t.ok, hasChildren: false, intervalQuantity: iq, minimumQuantity: mn, maximumQuantity: t.mx,
+      orderProperties: t.op || [], hasOrderProperties: !!t.hop, hasRequiredOrderProperty: !!t.hrop, showQuantity: false,
+      itemUrl: t.u, hasPrice: !!t.hp, hasGraduatedPrice: t.gpn > 1 && !!cfg.enableGraduatedPrices, itemType: t.it, useLargeScale: true };
+    var vm = new V({ parent: app, render: function (h) { return h("add-to-basket", { props: p }); } });
+    vm.$mount(ziel);
+    korbVms.push(vm);
+    return true;
+  }
+
+  function aufraeumen() {
+    korbVms.forEach(function (vm) { try { vm.$destroy(); } catch (x) {} });
+    korbVms = [];
+    var alt = document.querySelectorAll(".osva-zb, .osva-empf");
+    for (var i = 0; i < alt.length; i++) alt[i].parentNode.removeChild(alt[i]);
+  }
+
+  function zubehoerZeigen(liste) {
+    var eintraege = [];
+    (liste || []).forEach(function (id) {
+      var t = daten.t[id];
+      if (kachelOk(t) && eintraege.length < C.maxZ) eintraege.push({ id: id, t: t });
+    });
+    if (!eintraege.length) return;
+    var box = document.createElement("div");
+    box.className = "osva-zb";
+    box.innerHTML = '<div class="osva-zb-kopf">' + esc(C.titelZ) + "</div>" + eintraege.map(function (e) {
+      var t = e.t;
+      return '<div class="osva-zb-zeile" data-id="' + e.id + '">' +
+        '<a class="osva-zb-bild" href="' + esc(t.u) + '"><img src="' + esc(t.b) + '" alt="' + esc(t.alt || t.n) + '" width="64" height="64" loading="lazy"></a>' +
+        '<a class="osva-zb-txt" href="' + esc(t.u) + '"><b>' + esc(t.n) + "</b><em>" + esc(t.vn) + "</em></a>" +
+        '<span class="osva-zb-preis">' + esc(t.p) + (t.uvp && t.uvpv > t.pv ? "<del>" + esc(t.uvp) + "</del>" : "") + "</span>" +
+        '<span class="osva-korb"><span></span></span></div>';
+    }).join("");
+    var w = korb.closest(".widget") || korb;
+    w.parentNode.insertBefore(box, w.nextSibling);
+    eintraege.forEach(function (e) {
+      var z = box.querySelector('.osva-zb-zeile[data-id="' + e.id + '"] .osva-korb > span');
+      if (!z || !korbKnopf(z, e.id, e.t)) {
+        var k = box.querySelector('.osva-zb-zeile[data-id="' + e.id + '"] .osva-korb');
+        if (k) k.style.display = "none";
+      }
+    });
+    box.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest("a");
+      if (a) ga("select_item", C.titelZ, eintraege.filter(function (e) { return a.getAttribute("href") === e.t.u; }));
+    });
+    ga("view_item_list", C.titelZ, eintraege);
+  }
+
+  function empfZeigen(liste) {
+    var eintraege = [];
+    (liste || []).forEach(function (paar) {
+      var t = daten.t[paar[0]];
+      if (kachelOk(t) && eintraege.length < C.maxE) eintraege.push({ id: paar[0], t: t, stern: paar[1] });
+    });
+    if (!eintraege.length) return;
+    var box = document.createElement("section");
+    box.className = "osva-empf";
+    box.innerHTML = "<h2>" + esc(C.titelE) + '</h2><div class="osva-reihe">' + eintraege.map(function (e) {
+      var t = e.t;
+      return '<a class="osva-k" href="' + esc(t.u) + '">' + (e.stern ? '<span class="osva-marke">' + esc(C.marke) + "</span>" : "") +
+        '<span class="osva-k-bild"><img src="' + esc(t.b) + '" alt="' + esc(t.alt || t.n) + '" loading="lazy"></span>' +
+        '<span class="osva-k-txt"><span class="osva-k-name">' + esc(t.n) + '</span><span class="osva-k-meta">' + esc(t.vn) + "</span>" +
+        (t.av ? '<span class="osva-k-lief">' + esc(t.av) + "</span>" : "") +
+        '<span class="osva-k-preis">' + esc(t.p) + (t.uvp && t.uvpv > t.pv ? "<del>" + esc(t.uvp) + "</del>" : "") + "</span></span></a>";
+    }).join("") + "</div>";
+    // an die Stelle der Ceres-Listen, sonst unter die Reiter
+    var ziel = document.querySelector(".widget-item-list") || document.querySelector(".widget-feedback") || document.querySelector(".widget-tab");
+    if (ziel) {
+      ziel = ziel.closest(".widget") || ziel;
+      ziel.parentNode.insertBefore(box, ziel);
+    } else return;
+    box.addEventListener("click", function (ev) {
+      var a = ev.target.closest && ev.target.closest("a.osva-k");
+      if (a) ga("select_item", C.titelE, eintraege.filter(function (e) { return a.getAttribute("href") === e.t.u; }));
+    });
+    ga("view_item_list", C.titelE, eintraege);
+  }
+
+  function listenZeigen(vid) {
+    if (!daten) return;
+    aufraeumen();
+    var l = daten.v[vid];
+    if (!l) return;
+    zubehoerZeigen(l.z);
+    empfZeigen(l.e);
+  }
+
+  function laden() {
+    if (!C.cs || !ids.length) return;
+    var q = ids.slice().sort(function (a, b) { return a - b; }).join(",");
+    fetch("/rest/osv-artikelseite/listen?ids=" + q, { credentials: "same-origin" })
+      .then(function (r) { return r.json(); })
+      .then(function (j) {
+        daten = j || { v: {}, t: {} };
+        window.__osvaDaten = daten;
+        var eigen = daten.v && Object.keys(daten.v).length > 0;
+        if (eigen && C.ceresAus) document.body.classList.add("osva-eigen");
+        listenZeigen(aktuell);
+      })
+      .catch(function () {});
+  }
+
+  document.addEventListener("onVariationChanged", function (e) {
+    var d = e && e.detail && e.detail.documents && e.detail.documents[0] && e.detail.documents[0].data;
+    var vid = d && d.variation && d.variation.id;
+    setTimeout(function () {
+      namen();
+      brotkrumen();
+      if (vid && vid !== aktuell) { aktuell = vid; listenZeigen(vid); }
+    }, 60);
+  });
+
+  namen();
+  laden();
+})();
+</script>

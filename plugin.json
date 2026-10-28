@@ -1,0 +1,35 @@
+{
+  "name": "OSVArtikelseite",
+  "namespace": "OSVArtikelseite",
+  "type": "general",
+  "version": "0.1.0",
+  "license": "proprietary",
+  "author": "OSV",
+  "shortDescription": "Artikelseite: Zubehör beim Kaufknopf, Empfehlungen als Kachelreihe, Ausführungen mit Namen, Vorschaubilder links.",
+  "description": "Liest je Variante die Eigenschaften 302 (Zubehör) und 303 (Empfehlungen) und zeigt sie auf der Artikelseite: Zubehör als kompakte Liste unter dem Warenkorb-Knopf, Empfehlungen als Kachelreihe (Handy: Wischzeile). Beim Wechsel der Ausführung tauschen beide Listen mit. Dazu Namen unter den Ausführungs-Kacheln, Vorschaubilder links neben dem Hauptbild (Rechner) und die Brotkrumenleiste folgt der gewählten Ausführung. Jeder Teil ist einzeln schaltbar.",
+  "categories": [
+    "3527"
+  ],
+  "require": {
+    "IO": ">=5.0.0",
+    "Ceres": ">=5.0.0"
+  },
+  "serviceProvider": "OSVArtikelseite\\Providers\\OSVArtikelseiteServiceProvider",
+  "dependencies": {},
+  "javaScriptFiles": [],
+  "runOnBuild": [],
+  "dataProviders": [
+    {
+      "key": "OSVArtikelseite\\Containers\\ArtikelseiteKopf",
+      "name": "OSV Artikelseite Kopf",
+      "description": "CSS im Seitenkopf, damit beim Laden nichts springt.",
+      "defaultLayoutContainer": "Ceres::Template.Style"
+    },
+    {
+      "key": "OSVArtikelseite\\Containers\\ArtikelseiteScript",
+      "name": "OSV Artikelseite",
+      "description": "Zubehör, Empfehlungen, Ausführungen mit Namen und Brotkrumen auf der Artikelseite.",
+      "defaultLayoutContainer": "Ceres::Script.AfterScriptsLoaded"
+    }
+  ]
+}
