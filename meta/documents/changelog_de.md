@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.1.2 (28.10.2026)
+- Namen unter den Ausführungen auch beim ersten Laden (Ceres baut die Kacheln erst nach dem Skript auf, kurzes Nachfassen).
+- Anleitung: 302/303 brauchen Mandant, Herkunft „Mandant (Shop)“ und Anzeige „Artikeleinzelseite“ wie 288–290, sonst liefert Ceres sie nicht.
+
 ## 0.1.1 (28.10.2026)
 - Bereitstellen schlug fehl: `method_exists` ist in Plenty-Plugins nicht erlaubt. Ersetzt durch direkten Aufruf mit Fehlerabfang.
 

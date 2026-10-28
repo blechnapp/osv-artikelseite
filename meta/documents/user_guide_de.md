@@ -7,7 +7,7 @@ Gestaltet die Artikelseite (Einzelansicht) des Ceres-Shops. Jeder Teil ist in de
 2. Container verknüpfen:
    - „OSV Artikelseite Kopf“ → `Ceres::Template.Style`
    - „OSV Artikelseite“ → `Ceres::Script.AfterScriptsLoaded`
-3. Eigenschaften 302 (Zubehör) und 303 (Empfehlungen) brauchen den Mandanten und die Herkunft „Webshop“, sonst liefert die Shopsuche die Werte nicht. Keine Anzeige-Option setzen.
+3. Eigenschaften 302 (Zubehör) und 303 (Empfehlungen) einstellen wie 288–290: Mandant, Herkunft „Mandant (Shop)“ und Anzeige „Artikeleinzelseite“. Sonst liefert Ceres die Werte nicht. Sichtbar werden sie dadurch nicht (geprüft an 288–290).
 
 ## Daten
 - 302: bis zu 6 Varianten-IDs, kommagetrennt. Gezeigt werden höchstens 4 bestellbare.

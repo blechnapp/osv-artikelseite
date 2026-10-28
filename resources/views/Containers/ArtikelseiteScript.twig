@@ -193,7 +193,9 @@
     }, 60);
   });
 
+  // Ceres baut die Ausführungs-Kacheln erst nach diesem Skript auf: kurz nachfassen (ohne MutationObserver)
   namen();
+  [300, 1000, 2500, 5000].forEach(function (ms) { setTimeout(namen, ms); });
   laden();
 })();
 </script>
