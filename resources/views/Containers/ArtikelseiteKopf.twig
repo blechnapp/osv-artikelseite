@@ -224,6 +224,12 @@ body.osva-eigen .widget-item-list { display: none !important; }
      und .prop-1-1 auf padding-bottom: 70vh; das sind am Handy rund 590 px. Hier mit stärkerem Selektor überschrieben. */
   .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item,
   .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 > a { height: 300px !important; }
+  /* schon vor dem Aufbau des Karussells 300 px, sonst rutscht die Kaufbox nach dem Aufbau 220 px hoch (CLS 0,08, gemessen 28.10.) */
+  .single .widget-item-image .single-carousel { height: 300px !important; max-height: 300px; overflow: hidden; }
+  .single .widget-item-image #thumb-carousel { height: 62px !important; overflow: hidden; }
+  /* Ceres reserviert für den noch leeren Bildbereich per ::before 70vh (am Handy 591 px). Wir zeigen 300 + 7 + 62 = 369 px;
+     Platzhalter genau darauf, sonst springt die Kaufbox beim Start von Vue 222 px hoch (CLS 0,084, gemessen 28.10.). */
+  .single .widget-item-image:empty::before { height: 369px !important; padding: 0 !important; }
   .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer { height: auto !important; }
   .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 { padding-bottom: 0 !important; height: 300px !important; }
   .single .widget-item-image .owl-carousel.single-carousel .owl-item .prop-1-1 > a { display: flex !important; align-items: center; justify-content: center; }

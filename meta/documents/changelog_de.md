@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.2.7 (28.10.2026)
+- Handy: Springen beim Laden behoben (CLS 0,084 → 0,002, gemessen an a-966, a-1067, a-205). Ceres reserviert für den leeren Bildbereich per ::before 70vh (591 px); jetzt genau die gezeigten 369 px. Bild und Vorschaubild-Zeile haben ihre Höhe schon vor dem Aufbau des Karussells.
+
 ## 0.2.6 (28.10.2026)
 - Zittern beim Scrollen an der Ursache behoben: Die Kaufbox hatte 6 px Außenabstand oben, der beim Mitlaufen anders zählte; Ceres sprang deshalb bei jedem Scrollschritt zwischen fest und normal und die ganze Seite vibrierte. Abstände jetzt als Innenabstand des Elternteils; Ceres lässt die Box wieder normal mitlaufen. Der Abfang aus 0.2.5 ist zurückgenommen. Gemessen: Seite scrollt gleichmäßig, ein einziger Wechsel auf „läuft mit“.
 
