@@ -12,7 +12,8 @@ class ArtikelseiteScript
         $cs = Schalter::an($config, 'csAktiv');
         $namen = Schalter::an($config, 'namenAktiv');
         $brot = Schalter::an($config, 'brotkrumen');
-        if (!$cs && !$namen && !$brot) {
+        $aufbau = Schalter::an($config, 'aufbauAktiv');
+        if (!$cs && !$namen && !$brot && !$aufbau) {
             return '';
         }
         return $twig->render('OSVArtikelseite::Containers.ArtikelseiteScript', [
@@ -20,6 +21,7 @@ class ArtikelseiteScript
                 'cs'          => $cs,
                 'namen'       => $namen,
                 'brot'        => $brot,
+                'aufbau'      => $aufbau,
                 'ceresAus'    => Schalter::an($config, 'ceresListenAus'),
                 'titelZ'      => Schalter::text($config, 'titelZubehoer', 'Passendes Zubehör'),
                 'titelE'      => Schalter::text($config, 'titelEmpf', 'Unsere Empfehlungen'),

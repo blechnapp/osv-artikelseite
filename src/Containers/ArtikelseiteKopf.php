@@ -13,6 +13,7 @@ class ArtikelseiteKopf
             'cs'     => Schalter::an($config, 'csAktiv'),
             'namen'  => Schalter::an($config, 'namenAktiv'),
             'thumbs' => Schalter::an($config, 'thumbsLinks'),
+            'aufbau' => Schalter::an($config, 'aufbauAktiv'),
         ]);
     }
 }

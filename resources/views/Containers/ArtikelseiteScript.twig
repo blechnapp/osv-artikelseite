@@ -55,6 +55,32 @@
     }
   }
 
+  /* ---------- Ausführungen: erst eine Reihe, Rest per Knopf (wie im Entwurf) ---------- */
+  // Der Knopf steht außerhalb des Ceres-Bausteins (dahinter im selben Kasten), damit Ceres ihn beim Wechsel nicht entfernt.
+  function ausfuehrungenKlappen() {
+    if (!C.aufbau) return;
+    var w = document.querySelector(".single .widget-sticky .widget-attribute");
+    if (!w) return;
+    var n = w.querySelectorAll(".v-s-boxes.images .v-s-box").length;
+    var reihe = window.matchMedia("(max-width: 575.98px)").matches ? 4 : 5;
+    var kn = w.parentNode.querySelector(".osva-v-mehr");
+    if (n <= reihe + 1) { w.classList.remove("osva-v-zu"); if (kn) kn.parentNode.removeChild(kn); return; }
+    if (!kn) {
+      kn = document.createElement("button");
+      kn.type = "button";
+      kn.className = "osva-v-mehr";
+      w.parentNode.insertBefore(kn, w.nextSibling);
+      w.classList.add("osva-v-zu");
+      kn.addEventListener("click", function () { w.classList.toggle("osva-v-zu"); beschriften(); });
+    }
+    // steht die gewählte Ausführung hinter der ersten Reihe, rückt sie per CSS in die erste Reihe
+    var boxen = [].slice.call(w.querySelectorAll(".v-s-boxes.images .v-s-box"));
+    var akt = boxen.indexOf(w.querySelector(".v-s-boxes.images .v-s-box.active"));
+    w.classList.toggle("osva-v-hinten", akt >= reihe);
+    function beschriften() { kn.textContent = w.classList.contains("osva-v-zu") ? "Alle " + n + " Ausführungen zeigen" : "Weniger anzeigen"; }
+    beschriften();
+  }
+
   /* ---------- Brotkrumen folgen der Ausführung ---------- */
   function brotkrumen() {
     if (!C.brot) return;
@@ -64,6 +90,46 @@
       var t = (h.textContent || "").replace(/\s+/g, " ").trim();
       if (t) b.textContent = t;
     }
+  }
+
+  /* ---------- Abschnitte: Ceres-Reiter werden Klappkarten ---------- */
+  // Nur Überschrift einsetzen und Klassen setzen; die Reiter-Leiste bleibt im DOM und wird per CSS versteckt,
+  // dadurch rendert Ceres den Reiter-Baustein nicht neu.
+  function abschnitte() {
+    if (!C.aufbau) return;
+    var tab = document.querySelector(".single .widget-tab");
+    if (!tab || tab.classList.contains("osva-karten")) return;
+    var titel = [].map.call(tab.querySelectorAll(".nav-tabs .nav-link"), function (a) { return (a.textContent || "").trim(); });
+    var panes = [].slice.call(tab.querySelectorAll(".tab-content > .tab-pane"));
+    if (!panes.length) return;
+    function istLeer(p) { return !(p.textContent || "").replace(/\s+/g, "") && !p.querySelector("img, table, iframe"); }
+    // Ceres zeigt Reiter ohne Titel nicht in der Leiste, gibt deren Bereich aber aus (gemessen an 966: 6 Bereiche, 5 Titel).
+    // Gleiche Zahl: Titel nach Reihenfolge. Sonst: Titel der Reihe nach auf die Bereiche mit Inhalt.
+    var mitInhalt = panes.filter(function (p) { return !istLeer(p); });
+    var ziele = panes.length === titel.length ? panes : mitInhalt;
+    if (ziele.length !== titel.length) return;
+    var gross = window.matchMedia("(min-width: 992px)").matches;
+    panes.forEach(function (pane) { if (istLeer(pane)) pane.classList.add("osva-leer"); });
+    ziele.forEach(function (pane, i) {
+      if (pane.classList.contains("osva-leer")) return;
+      var k = document.createElement("button");
+      k.type = "button";
+      k.className = "osva-ab-kopf";
+      k.textContent = titel[i];
+      pane.insertBefore(k, pane.firstChild);
+      // Rechner: alles offen außer den Pflichtangaben; Handy: nur der erste Abschnitt (Beschreibung)
+      var pflicht = /verantwortlich|hersteller|gpsr|sicherheit/i.test(titel[i]);
+      var offen = gross ? !pflicht : i === 0;
+      pane.classList.toggle("osva-offen", offen);
+      k.setAttribute("aria-expanded", offen ? "true" : "false");
+      k.addEventListener("click", function () {
+        var o = pane.classList.toggle("osva-offen");
+        k.setAttribute("aria-expanded", o ? "true" : "false");
+      });
+    });
+    tab.classList.add("osva-karten");
+    var grid = tab.closest(".widget-grid");
+    if (grid) grid.classList.add("osva-ab-grid");
   }
 
   /* ---------- Zubehör und Empfehlungen ---------- */
@@ -200,6 +266,7 @@
     var vid = d && d.variation && d.variation.id;
     setTimeout(function () {
       namen();
+      ausfuehrungenKlappen();
       brotkrumen();
       if (vid && vid !== aktuell) { aktuell = vid; zeigen(vid, d); }
     }, 60);
@@ -207,7 +274,8 @@
 
   // Ceres baut die Ausführungs-Kacheln erst nach diesem Skript auf: kurz nachfassen (ohne MutationObserver)
   namen();
-  [300, 1000, 2500, 5000].forEach(function (ms) { setTimeout(namen, ms); });
+  [300, 1000, 2500, 5000].forEach(function (ms) { setTimeout(function () { namen(); ausfuehrungenKlappen(); }, ms); });
+  abschnitte();
   window.__osvaDaten = daten;
   zeigen(aktuell, start);
 })();

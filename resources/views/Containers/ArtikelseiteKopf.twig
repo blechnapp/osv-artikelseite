@@ -81,4 +81,147 @@
 /* Ceres-Artikellisten der Artikelseite weichen, sobald eigene Werte da sind */
 body.osva-eigen .widget-item-list { display: none !important; }
 {% endif %}
+{% if aufbau %}
+/* ===== Aufbau wie im Entwurf (artikelseite_20261028/vorschau.html), nur auf der Artikelseite (.single) ===== */
+/* Galerie: warmer Bildgrund, runde Ecken */
+/* Die Produktfotos haben weißen Grund: deshalb weiß mit feinem Rahmen statt Verlauf (Verlauf zeigte Ränder, getestet 28.10.) */
+.single .widget-item-image .single-carousel .owl-stage-outer { background: #fff; border: 1px solid #eee8de; border-radius: 12px; }
+
+/* Kaufbox als Karte, Bausteine per Reihenfolge wie im Entwurf (kein Umbau im DOM) */
+.single .widget-sticky > .widget-inner { display: flex; flex-direction: column; background: #fff; border: 1px solid #eef1f4; border-radius: 10px; padding: 24px 26px 22px; box-shadow: 0 10px 30px rgba(12,42,94,.09); }
+.single .widget-sticky > .widget-inner > * { order: 5; }
+.single .widget-sticky .producertag { order: 1; }
+.single .widget-sticky .title-outer { order: 2; }
+.single .widget-sticky .widget-tag { order: 3; }
+.single .widget-sticky .widget-feedback-average { order: 4; }
+.single .widget-sticky .widget-separator { display: none; }
+.single .widget-sticky .widget-code:not(.vat) { order: 10; }
+.single .widget-sticky .widget-item-price { order: 11; }
+.single .widget-sticky .widget-graduate-price { order: 12; }
+.single .widget-sticky .widget-availability { order: 13; }
+.single .widget-sticky .av-date { order: 14; }
+.single .widget-sticky .widget-energy-label { order: 15; }
+.single .widget-sticky .widget-datasheet { order: 16; }
+.single .widget-sticky .widget-attribute { order: 20; }
+.single .widget-sticky .widget-order-property { order: 21; }
+.single .widget-sticky .widget-item-bundle { order: 22; }
+.single .widget-sticky .widget-item-availability-notification { order: 29; }
+.single .widget-sticky .widget-add-to-basket { order: 30; }
+.single .widget-sticky .osva-zb { order: 31; }
+.single .widget-sticky .widget-add-to-wish-list { order: 32; }
+.single .widget-sticky .paypal-installment-banner-graphical { order: 33; }
+.single .widget-sticky .widget-warning { order: 40; }
+.single .widget-sticky .articlenumber { order: 41; }
+.single .widget-sticky .vat { order: 42; }
+
+/* Marke, Titel, Ausführung in der Überschrift */
+.single .widget-sticky .producertag p { font-size: 12.5px; letter-spacing: .16em; text-transform: uppercase; color: #b08052 !important; margin: 0 0 8px; }
+.single .widget-sticky .producertag p * { color: #b08052 !important; }
+.single .widget-sticky .title-outer h1 { color: #0c2a5e; font-size: clamp(24px, 2.4vw, 32px); line-height: 1.2; margin: 0 0 8px; }
+.single .widget-sticky .title-outer h1 > span + span { display: block; color: #b08052; font-size: .82em; margin-top: 2px; }
+.single .widget-sticky .widget-text:not(.producertag):not(.title-outer):not(.av-date):not(.articlenumber):not(.widget-warning) p { font-size: 14px; color: #6b6b6b; margin: 0 0 6px; }
+.single .widget-sticky .widget-text:not(.producertag):not(.title-outer):not(.av-date):not(.articlenumber):not(.widget-warning) p strong { font-weight: 500; }
+.single .widget-sticky .widget-feedback-average { margin: 2px 0 12px; }
+
+/* Preis: groß, UVP und Grundpreis leise */
+.single .widget-sticky .widget-item-price { border-top: 1px solid #e5dfd6; padding-top: 14px; margin-top: 4px; }
+.single .widget-sticky .widget-item-price .has-crossprice, .single .widget-sticky .widget-item-price > div { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.single .widget-sticky .widget-item-price .price { order: 1; font-size: 36px !important; font-weight: 700; color: #0c2a5e; line-height: 1.1; margin: 0; }
+.single .widget-sticky .widget-item-price .crossprice { order: 2; }
+.single .widget-sticky .widget-item-price .crossprice del { font-size: 16px; }
+.single .widget-sticky .widget-item-price .base-price { order: 3; flex-basis: 100%; margin: 4px 0 0 !important; font-size: 13.5px; }
+.single .widget-sticky .widget-code:not(.vat) { margin: 4px 0 2px; }
+
+/* Lieferbarkeit als Zeile mit Punkt */
+.single .widget-sticky .widget-availability { margin: 12px 0 14px; font-size: 15px; }
+.single .widget-sticky .widget-availability .availability { background: none !important; padding: 0; font-size: 15px; font-weight: 500; color: #1c7a3e; white-space: normal; text-align: left; }
+.single .widget-sticky .widget-availability .availability:before { content: ""; display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: currentColor; margin-right: 8px; vertical-align: 2px; }
+.single .widget-sticky .widget-availability .availability:not(.availability-1) { color: #b26a00; }
+.single .widget-sticky .av-date h4 { font-size: 14px; margin: -8px 0 12px; }
+
+/* Ausführungen: Kopfzeile wie im Entwurf */
+.single .widget-sticky .widget-attribute { border-top: 1px solid #e5dfd6; padding-top: 14px; margin-bottom: 8px !important; }
+.single .widget-sticky .widget-attribute [data-testing="attribute-name"] { font-weight: 700; color: #0c2a5e !important; }
+
+/* Ausführungen: erst eine Reihe (Rechner 5, Handy 4), die gewählte bleibt immer sichtbar, Rest per Knopf */
+.single .widget-sticky .widget-attribute .v-s-boxes { padding: 8px 0 4px !important; }
+.single .widget-sticky .osva-v-zu .v-s-boxes.images .v-s-box:nth-of-type(n+6):not(.active) { display: none !important; }
+/* gewählte Ausführung steht weiter hinten: eine weniger zeigen, damit sie in die erste Reihe rückt */
+.single .widget-sticky .osva-v-zu.osva-v-hinten .v-s-boxes.images .v-s-box:nth-of-type(n+5):not(.active) { display: none !important; }
+.single .widget-sticky .osva-v-mehr { order: 20; display: block; width: 100%; margin: 2px 0 14px; padding: 9px; border: 1.5px solid #e5dfd6; border-radius: 5px; background: #fff; font-weight: 600; font-size: 15px; color: #0c2a5e; cursor: pointer; }
+.single .widget-sticky .osva-v-mehr:hover { border-color: #b08052; background: #faf7f2; }
+/* leere Ceres-Bausteine ohne Abstand */
+.single .widget-sticky .widget-item-bundle, .single .widget-sticky .widget-order-property, .single .widget-sticky .widget-graduate-price,
+.single .widget-sticky .widget-energy-label, .single .widget-sticky .widget-datasheet, .single .widget-sticky .widget-item-availability-notification,
+.single .widget-sticky .widget-tag { margin: 0 !important; }
+.single .widget-sticky .widget-tag:empty { display: none; }
+.single .widget-sticky .paypal-installment-banner-graphical { margin: 0 !important; }
+/* Rechner: Bild läuft beim Scrollen neben der Kaufbox mit (wie im Entwurf) */
+@media (min-width: 992px) { .single .widget-item-image { position: sticky; top: 20px; } }
+
+/* Warenkorb: dunkelblauer Knopf, Menge daneben */
+.single .widget-sticky .widget-add-to-basket { margin: 6px 0 12px !important; }
+.single .widget-sticky .widget-add-to-basket .btn-primary { background: #0c2a5e !important; border-color: #0c2a5e !important; color: #fff !important; border-radius: 5px !important; min-height: 52px; font-size: 17px; font-weight: 600; }
+.single .widget-sticky .widget-add-to-basket .btn-primary:hover { background: #04305e !important; }
+.single .widget-sticky .widget-add-to-basket .qty-box { border-radius: 5px; overflow: hidden; }
+.single .widget-sticky .widget-add-to-wish-list { margin: -4px 0 6px; }
+
+/* Versandhinweis und Kleingedrucktes am Ende der Karte */
+.single .widget-sticky .widget-warning > .widget-inner { background: none !important; border: 0 !important; padding: 0 !important; margin: 10px 0 6px; }
+.single .widget-sticky .widget-warning h4 { font-size: 14.5px; font-weight: 400; color: #4a4a4a; margin: 0; }
+.single .widget-sticky .widget-warning h4 span { color: #4a4a4a !important; }
+.single .widget-sticky .articlenumber { margin: 4px 0 2px !important; font-size: 12.5px; }
+.single .widget-sticky .articlenumber p { margin: 0; }
+.single .widget-sticky .vat { font-size: 12px; margin-top: 6px; }
+
+/* Abschnitte unter Bild und Kaufbox: volle Breite, Reiter werden Klappkarten */
+.single .osva-ab-grid > .widget-inner:first-child { flex: 0 0 100% !important; max-width: 100% !important; }
+.single .osva-ab-grid > .widget-inner:nth-child(2) { display: none !important; }
+.single .osva-karten { margin-top: 28px !important; }
+.single .osva-karten .nav-tabs { display: none !important; }
+.single .osva-karten .tab-content > .tab-pane { display: block !important; opacity: 1 !important; background: #fff; border: 1px solid #e5dfd6; border-radius: 10px; margin-bottom: 14px; overflow: hidden; }
+.single .osva-karten .tab-content > .tab-pane.osva-leer { display: none !important; }
+.single .osva-karten .tab-pane > :not(.osva-ab-kopf) { padding: 0 26px 20px; margin: 0 !important; }
+.single .osva-karten .tab-pane:not(.osva-offen) > :not(.osva-ab-kopf) { display: none !important; }
+.single .osva-ab-kopf { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 18px 52px 18px 26px; position: relative; font-size: 21px; font-weight: 600; color: #0c2a5e; cursor: pointer; }
+.single .osva-ab-kopf:after { content: ""; position: absolute; right: 24px; top: 24px; width: 9px; height: 9px; border-right: 2px solid #b08052; border-bottom: 2px solid #b08052; transform: rotate(45deg); transition: .2s; }
+.single .osva-offen > .osva-ab-kopf { border-bottom: 1px solid #e5dfd6; margin-bottom: 18px; }
+.single .osva-offen > .osva-ab-kopf:after { transform: rotate(-135deg); top: 28px; }
+.single .osva-karten .tab-pane h2 { font-size: 21px; color: #0c2a5e; margin: 0 0 12px; }
+.single .osva-karten .tab-pane p { font-size: 16px; line-height: 1.7; color: #3c3c3c; }
+.single .osva-karten .tab-pane p:empty { display: none; }
+.single .osva-karten .tab-pane ul { list-style: none; padding-left: 0; margin: 14px 0; }
+.single .osva-karten .tab-pane ul li { position: relative; padding-left: 22px; margin-bottom: 6px; font-size: 16px; line-height: 1.6; }
+.single .osva-karten .tab-pane ul li:before { content: ""; position: absolute; left: 5px; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: #b08052; }
+.single .osva-karten .tab-pane table { max-width: 640px; }
+
+@media (max-width: 991.98px) {
+  .single .widget-sticky > .widget-inner { box-shadow: none; padding: 18px 16px 16px; margin-top: 12px; }
+  .single .osva-ab-kopf { font-size: 18px; padding: 15px 46px 15px 18px; }
+  .single .osva-ab-kopf:after { right: 20px; top: 20px; }
+  .single .osva-offen > .osva-ab-kopf:after { top: 24px; }
+  .single .osva-karten .tab-pane > :not(.osva-ab-kopf) { padding: 0 18px 16px; }
+}
+@media (max-width: 575.98px) {
+  /* Handy: Bild kleiner, Vorschaubilder als Wischzeile, damit Name und Preis früher kommen */
+  /* Bildhöhe am Handy begrenzen. Das Shop-CSS (Ceres-Einstellungen) setzt .single-carousel .owl-item/a/img auf height: 70vh !important
+     und .prop-1-1 auf padding-bottom: 70vh; das sind am Handy rund 590 px. Hier mit stärkerem Selektor überschrieben. */
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item,
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 > a { height: 300px !important; }
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer { height: auto !important; }
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 { padding-bottom: 0 !important; height: 300px !important; }
+  .single .widget-item-image .owl-carousel.single-carousel .owl-item .prop-1-1 > a { display: flex !important; align-items: center; justify-content: center; }
+  .single .widget-item-image .owl-carousel.single-carousel .owl-item .prop-1-1 img { max-height: 280px !important; max-width: 100% !important; width: auto !important; height: auto !important; margin: 0 auto !important; object-fit: contain; }
+  .single .widget-item-image #thumb-carousel .owl-stage-outer { height: auto !important; overflow-x: auto; scrollbar-width: none; }
+  .single .widget-item-image #thumb-carousel .owl-stage-outer::-webkit-scrollbar { display: none; }
+  .single .widget-item-image #thumb-carousel .owl-stage { transform: none !important; width: max-content !important; display: flex; gap: 8px; }
+  .single .widget-item-image #thumb-carousel .owl-item { width: 62px !important; margin: 0 !important; }
+  .single .widget-item-image #thumb-carousel .image-container { padding: 3px !important; border: 1.5px solid #e5dfd6; border-radius: 6px; }
+  .single .widget-item-image #thumb-carousel .owl-nav { display: none; }
+  .single .widget-sticky .title-outer h1 { font-size: 23px; }
+  .single .widget-sticky .osva-v-zu .v-s-boxes.images .v-s-box:nth-of-type(n+5):not(.active) { display: none !important; }
+  .single .widget-sticky .osva-v-zu.osva-v-hinten .v-s-boxes.images .v-s-box:nth-of-type(n+4):not(.active) { display: none !important; }
+  .single .widget-sticky .widget-item-price .price { font-size: 30px !important; }
+}
+{% endif %}
 </style>

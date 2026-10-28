@@ -8,49 +8,65 @@
           "type": "checkBox",
           "required": false,
           "label": "Zubehör (Eigenschaft 302) und Empfehlungen (Eigenschaft 303) zeigen",
-          "options": { "defaultValue": "true" }
+          "options": {
+            "defaultValue": "true"
+          }
         },
         "ceresListenAus": {
           "type": "checkBox",
           "required": false,
           "label": "Ceres-Artikellisten der Artikelseite ausblenden, sobald der Artikel eigene Werte hat",
-          "options": { "defaultValue": "true" }
+          "options": {
+            "defaultValue": "true"
+          }
         },
         "titelZubehoer": {
           "type": "text",
           "required": false,
           "label": "Überschrift Zubehör",
-          "options": { "defaultValue": "Passendes Zubehör" }
+          "options": {
+            "defaultValue": "Passendes Zubehör"
+          }
         },
         "titelEmpf": {
           "type": "text",
           "required": false,
           "label": "Überschrift Empfehlungen",
-          "options": { "defaultValue": "Unsere Empfehlungen" }
+          "options": {
+            "defaultValue": "Unsere Empfehlungen"
+          }
         },
         "textMarke": {
           "type": "text",
           "required": false,
           "label": "Marke an Empfehlungen mit * (oft zusammen gekauft)",
-          "options": { "defaultValue": "Oft zusammen gekauft" }
+          "options": {
+            "defaultValue": "Oft zusammen gekauft"
+          }
         },
         "maxZubehoer": {
           "type": "text",
           "required": false,
           "label": "Höchstens so viele Zubehörteile zeigen",
-          "options": { "defaultValue": "4" }
+          "options": {
+            "defaultValue": "4"
+          }
         },
         "maxEmpf": {
           "type": "text",
           "required": false,
           "label": "Höchstens so viele Empfehlungen zeigen",
-          "options": { "defaultValue": "4" }
+          "options": {
+            "defaultValue": "4"
+          }
         },
         "cacheMinuten": {
           "type": "text",
           "required": false,
           "label": "Zwischenspeicher der Listen im Browser und CDN, Minuten",
-          "options": { "defaultValue": "15" }
+          "options": {
+            "defaultValue": "15"
+          }
         }
       }
     },
@@ -61,19 +77,33 @@
           "type": "checkBox",
           "required": false,
           "label": "Namen unter den Ausführungs-Kacheln zeigen",
-          "options": { "defaultValue": "true" }
+          "options": {
+            "defaultValue": "true"
+          }
         },
         "thumbsLinks": {
           "type": "checkBox",
           "required": false,
           "label": "Vorschaubilder links neben dem Hauptbild (nur Rechner)",
-          "options": { "defaultValue": "true" }
+          "options": {
+            "defaultValue": "true"
+          }
         },
         "brotkrumen": {
           "type": "checkBox",
           "required": false,
           "label": "Brotkrumenleiste folgt der gewählten Ausführung",
-          "options": { "defaultValue": "true" }
+          "options": {
+            "defaultValue": "true"
+          }
+        },
+        "aufbauAktiv": {
+          "type": "checkBox",
+          "required": false,
+          "label": "Aufbau wie im Entwurf: Kaufbox als Karte, Abschnitte als Klappkarten, Bild am Handy kleiner",
+          "options": {
+            "defaultValue": "true"
+          }
         }
       }
     }

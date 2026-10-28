@@ -1,5 +1,13 @@
 # Änderungen
 
+## 0.2.0 (28.10.2026)
+- Aufbau wie im Entwurf (`artikelseite_20261028/vorschau.html`), schaltbar über „Aufbau wie im Entwurf“:
+  - Kaufbox als Karte; Marke, Titel mit Ausführung, Bewertung, Preis mit UVP, Lieferbarkeit, Ausführungen, Warenkorb, Zubehör, Versandhinweis, Artikelnummer in dieser Reihenfolge (nur CSS-Reihenfolge, kein Umbau im DOM).
+  - Ausführungen erst eine Reihe (Rechner 5, Handy 4), gewählte immer in der ersten Reihe, Knopf „Alle n Ausführungen zeigen“.
+  - Reiter werden Klappkarten über die volle Breite; leere Bereiche entfallen; Rechner offen außer Pflichtangaben, Handy nur Beschreibung offen.
+  - Handy: Hauptbild 300 px statt 70vh (Shop-CSS), Vorschaubilder als Wischzeile. Rechner: Bild läuft beim Scrollen mit.
+  - Warenkorb-Knopf dunkelblau, leere Ceres-Bausteine ohne Abstand.
+
 ## 0.1.3 (28.10.2026)
 - 302/303 kommen jetzt aus den Ceres-Daten der Artikelseite (variationProperties, wie OSVCustomMeta 288/289), beim Wechsel aus dem Ereignis onVariationChanged. Die Listen-Suche der Route lieferte die Eigenschaften nicht.
 - Route `?t=` liefert nur noch Kacheldaten, nur für fehlende Varianten.

@@ -15,6 +15,7 @@ Gestaltet die Artikelseite (Einzelansicht) des Ceres-Shops. Jeder Teil ist in de
 - Gepflegt werden die Werte vom Items-Tool. 304 bis 306 („Zubehör für“) liest das Plugin nicht.
 
 ## Teile
+- Aufbau wie im Entwurf (Kaufbox als Karte, Klappkarten, Handy-Bild)
 - Zubehör und Empfehlungen
 - Namen unter den Ausführungen
 - Vorschaubilder links (Rechner)
