@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.2.5 (28.10.2026)
+- Zittern der Kaufbox beim Scrollen behoben: Ceres ließ die (bildschirmhohe) Box per Skript mitlaufen und sprang zwischen fest und normal. Mitlaufen der Box aus, Ceres-Platzhalter auf null; das Bild links läuft weiter mit.
+- Knopftext der Ausführungen wird nur bei Änderung geschrieben.
+
 ## 0.2.4 (28.10.2026)
 - Rechner wie im Entwurf: Inhalt auf 1.320 px mit Rand, warmer Seitengrund (#faf7f2), Abstand zwischen Bild und Kaufbox, Bild mit leichtem Schatten, Abschnitte mit Schatten. Bildpfeile bleiben wie bei Ceres.
 

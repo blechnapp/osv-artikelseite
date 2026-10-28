@@ -87,6 +87,12 @@ body.osva-eigen .widget-item-list { display: none !important; }
 /* Die Produktfotos haben weißen Grund: deshalb weiß mit feinem Rahmen statt Verlauf (Verlauf zeigte Ränder, getestet 28.10.) */
 .single .widget-item-image .single-carousel .owl-stage-outer { background: #fff; border: 1px solid #eee8de; border-radius: 12px; }
 
+/* Ceres lässt die Kaufbox per Skript mitlaufen (is-sticky, position: fixed). Die Box ist höher als der Bildschirm
+   und das Skript springt beim Scrollen zwischen fest und normal hin und her (gemessen 28.10.: Zittern). Deshalb aus. */
+.single .widget-sticky.is-sticky { position: static !important; transform: none !important; top: auto !important; left: auto !important; width: auto !important; }
+/* Ceres-Platzhalter vor der Box (bekommt beim Mitlaufen die Boxhöhe) auf null halten */
+.single div:has(> .widget-sticky) > div:not(.widget) { height: 0 !important; min-height: 0 !important; padding: 0 !important; margin: 0 !important; }
+
 /* Kaufbox als Karte, Bausteine per Reihenfolge wie im Entwurf (kein Umbau im DOM) */
 .single .widget-sticky > .widget-inner { display: flex; flex-direction: column; background: #fff; border: 1px solid #eef1f4; border-radius: 10px; padding: 24px 26px 22px; box-shadow: 0 10px 30px rgba(12,42,94,.09); }
 .single .widget-sticky > .widget-inner > * { order: 5; }

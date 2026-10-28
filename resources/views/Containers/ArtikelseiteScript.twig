@@ -76,8 +76,11 @@
     // steht die gewählte Ausführung hinter der ersten Reihe, rückt sie per CSS in die erste Reihe
     var boxen = [].slice.call(w.querySelectorAll(".v-s-boxes.images .v-s-box"));
     var akt = boxen.indexOf(w.querySelector(".v-s-boxes.images .v-s-box.active"));
-    w.classList.toggle("osva-v-hinten", akt >= reihe);
-    function beschriften() { kn.textContent = w.classList.contains("osva-v-zu") ? "Alle " + n + " Ausführungen zeigen" : "Weniger anzeigen"; }
+    if (w.classList.contains("osva-v-hinten") !== (akt >= reihe)) w.classList.toggle("osva-v-hinten", akt >= reihe);
+    function beschriften() {
+      var t = w.classList.contains("osva-v-zu") ? "Alle " + n + " Ausführungen zeigen" : "Weniger anzeigen";
+      if (kn.textContent !== t) kn.textContent = t;   // nur bei Änderung schreiben, sonst rechnet der Browser alle 0,4 s neu
+    }
     beschriften();
   }
 
