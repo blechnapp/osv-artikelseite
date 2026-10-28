@@ -274,7 +274,8 @@
 
   // Ceres baut die Ausführungs-Kacheln erst nach diesem Skript auf: kurz nachfassen (ohne MutationObserver)
   namen();
-  [300, 1000, 2500, 5000].forEach(function (ms) { setTimeout(function () { namen(); ausfuehrungenKlappen(); }, ms); });
+  // Ceres baut Ausführungs-Kacheln und Reiter erst nach diesem Skript auf (im echten Shop gemessen 28.10.): nachfassen
+  [300, 1000, 2500, 5000].forEach(function (ms) { setTimeout(function () { namen(); ausfuehrungenKlappen(); abschnitte(); }, ms); });
   abschnitte();
   window.__osvaDaten = daten;
   zeigen(aktuell, start);

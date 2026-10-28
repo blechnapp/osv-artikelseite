@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.2.1 (28.10.2026)
+- Klappkarten auch, wenn Ceres die Reiter erst nach dem Skript aufbaut (nachfassen wie bei den Namen).
+
 ## 0.2.0 (28.10.2026)
 - Aufbau wie im Entwurf (`artikelseite_20261028/vorschau.html`), schaltbar über „Aufbau wie im Entwurf“:
   - Kaufbox als Karte; Marke, Titel mit Ausführung, Bewertung, Preis mit UVP, Lieferbarkeit, Ausführungen, Warenkorb, Zubehör, Versandhinweis, Artikelnummer in dieser Reihenfolge (nur CSS-Reihenfolge, kein Umbau im DOM).
