@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.2.2 (28.10.2026)
+- Klappkarten auch bei Artikeln, deren Reiter Ceres erst nach über 5 s aufbaut (a-205, a-1067): Nachfassen alle 0,4 s bis fertig, höchstens 16 s.
+
 ## 0.2.1 (28.10.2026)
 - Klappkarten auch, wenn Ceres die Reiter erst nach dem Skript aufbaut (nachfassen wie bei den Namen).
 
