@@ -35,9 +35,12 @@ class ListenController extends Controller
 
             // 1. Eigenschaften der Varianten des Artikels
             $factory = VariationList::getSearchFactory(['variationIds' => $ids, 'itemsPerPage' => count($ids)]);
-            $diag['wvp'] = method_exists($factory, 'withVariationProperties');
-            if ($diag['wvp']) {
+            // method_exists ist in Plenty-Plugins nicht erlaubt (Build 28.10.2026), deshalb direkt mit Fehlerabfang
+            try {
                 $factory->withVariationProperties();
+                $diag['wvp'] = true;
+            } catch (\Throwable $fehler) {
+                $diag['wvp'] = false;
             }
             $ergebnis = $suche->getResult($factory);
             $diag['docs'] = count($ergebnis['documents'] ?? []);

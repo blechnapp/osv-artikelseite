@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.1.1 (28.10.2026)
+- Bereitstellen schlug fehl: `method_exists` ist in Plenty-Plugins nicht erlaubt. Ersetzt durch direkten Aufruf mit Fehlerabfang.
+
 ## 0.1.0 (28.10.2026)
 - Zubehör aus Eigenschaft 302 als kompakte Liste unter dem Warenkorb-Knopf, je Zeile mit dem Ceres-Warenkorb-Baustein.
 - Empfehlungen aus Eigenschaft 303 als Kachelreihe (Rechner 4 nebeneinander, Handy Wischzeile), `*` vor der ID zeigt „Oft zusammen gekauft“.
