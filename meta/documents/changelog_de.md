@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.2.6 (28.10.2026)
+- Zittern beim Scrollen an der Ursache behoben: Die Kaufbox hatte 6 px Außenabstand oben, der beim Mitlaufen anders zählte; Ceres sprang deshalb bei jedem Scrollschritt zwischen fest und normal und die ganze Seite vibrierte. Abstände jetzt als Innenabstand des Elternteils; Ceres lässt die Box wieder normal mitlaufen. Der Abfang aus 0.2.5 ist zurückgenommen. Gemessen: Seite scrollt gleichmäßig, ein einziger Wechsel auf „läuft mit“.
+
 ## 0.2.5 (28.10.2026)
 - Zittern der Kaufbox beim Scrollen behoben: Ceres ließ die (bildschirmhohe) Box per Skript mitlaufen und sprang zwischen fest und normal. Mitlaufen der Box aus, Ceres-Platzhalter auf null; das Bild links läuft weiter mit.
 - Knopftext der Ausführungen wird nur bei Änderung geschrieben.
