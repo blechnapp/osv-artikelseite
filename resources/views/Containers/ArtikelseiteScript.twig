@@ -9,28 +9,36 @@
 
   function esc(t) { return String(t == null ? "" : t).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
 
-  // Varianten des Artikels: Ceres legt sie als JSON-Liste in die Seite (für die Merkmalsauswahl)
-  function variantenIds() {
+  // 302/303 lesen wie OSVCustomMeta 288/289: aus den Ceres-Daten der Artikelseite (variationProperties, gruppiert)
+  function listenAus(d) {
+    var w = {};
+    ((d && d.variationProperties) || []).forEach(function (g) {
+      (g.properties || []).forEach(function (p) {
+        var v = p && p.values && p.values.value;
+        if (p && (p.id === 302 || p.id === 303) && typeof v === "string") w[p.id] = v;
+      });
+    });
+    var z = [], e = [];
+    String(w[302] || "").split(",").forEach(function (t) { var id = parseInt(t, 10); if (id > 0 && z.indexOf(id) < 0) z.push(id); });
+    String(w[303] || "").split(",").forEach(function (t) {
+      t = t.trim(); var id = parseInt(t.replace(/^\*/, ""), 10);
+      if (id > 0) e.push([id, t.charAt(0) === "*" ? 1 : 0]);
+    });
+    return { z: z, e: e };
+  }
+  // Datenblock der gewählten Variante beim Laden (JSON mit total und documents)
+  function startDaten() {
     var s = document.querySelectorAll('script[type="application/json"]');
     for (var i = 0; i < s.length; i++) {
       var t = (s[i].textContent || "").trim();
-      if (t.indexOf('[{"variationId"') === 0) {
-        try { return JSON.parse(t).map(function (x) { return x.variationId; }); } catch (e) {}
+      if (t.indexOf('{"total":') === 0 && t.indexOf('"variationProperties"') > 0) {
+        try { var j = JSON.parse(t); return j.documents && j.documents[0] && j.documents[0].data; } catch (x) {}
       }
     }
-    return [];
+    return null;
   }
-  // Gewählte Variante beim Laden: steht in der kanonischen Adresse (…_966_6955/)
-  function startId() {
-    var m = location.pathname.match(/_(\d+)_(\d+)\/?$/);
-    if (m) return +m[2];
-    var l = document.querySelector('link[rel="canonical"]');
-    m = l && l.href.match(/_(\d+)_(\d+)\/?$/);
-    return m ? +m[2] : 0;
-  }
-  var aktuell = startId();
-  var ids = variantenIds();
-  if (aktuell && ids.indexOf(aktuell) < 0) ids.push(aktuell);
+  var start = startDaten();
+  var aktuell = start && start.variation ? start.variation.id : 0;
 
   /* ---------- Ausführungen mit Namen ---------- */
   function namen() {
@@ -59,7 +67,7 @@
   }
 
   /* ---------- Zubehör und Empfehlungen ---------- */
-  var daten = null, korbVms = [];
+  var daten = { v: {}, t: {} }, korbVms = [];
 
   function kachelOk(t) { return t && t.ok && t.hp; }
 
@@ -160,25 +168,29 @@
   }
 
   function listenZeigen(vid) {
-    if (!daten) return;
     aufraeumen();
     var l = daten.v[vid];
-    if (!l) return;
+    var eigen = !!(l && (l.z.length || l.e.length));
+    // Ceres-Listen nur ausblenden, wenn diese Ausführung eigene Werte hat
+    document.body.classList.toggle("osva-eigen", eigen && !!C.ceresAus);
+    if (!eigen) return;
     zubehoerZeigen(l.z);
     empfZeigen(l.e);
   }
 
-  function laden() {
-    if (!C.cs || !ids.length) return;
-    var q = ids.slice().sort(function (a, b) { return a - b; }).join(",");
-    fetch("/rest/osv-artikelseite/listen?ids=" + q, { credentials: "same-origin" })
+  // Kacheldaten (Bild, Preis, Warenkorb) für die genannten Varianten holen, nur was noch fehlt
+  function zeigen(vid, d) {
+    if (!C.cs || !vid) return;
+    if (d && !daten.v[vid]) daten.v[vid] = listenAus(d);
+    var l = daten.v[vid];
+    if (!l) return;
+    var fehlt = l.z.concat(l.e.map(function (p) { return p[0]; })).filter(function (id) { return !(id in daten.t); });
+    if (!fehlt.length) { if (vid === aktuell) listenZeigen(vid); return; }
+    fetch("/rest/osv-artikelseite/listen?t=" + fehlt.sort(function (a, b) { return a - b; }).join(","), { credentials: "same-origin" })
       .then(function (r) { return r.json(); })
       .then(function (j) {
-        daten = j || { v: {}, t: {} };
-        window.__osvaDaten = daten;
-        var eigen = daten.v && Object.keys(daten.v).length > 0;
-        if (eigen && C.ceresAus) document.body.classList.add("osva-eigen");
-        listenZeigen(aktuell);
+        fehlt.forEach(function (id) { daten.t[id] = (j && j.t && j.t[id]) || null; });
+        if (vid === aktuell) listenZeigen(vid);
       })
       .catch(function () {});
   }
@@ -189,13 +201,14 @@
     setTimeout(function () {
       namen();
       brotkrumen();
-      if (vid && vid !== aktuell) { aktuell = vid; listenZeigen(vid); }
+      if (vid && vid !== aktuell) { aktuell = vid; zeigen(vid, d); }
     }, 60);
   });
 
   // Ceres baut die Ausführungs-Kacheln erst nach diesem Skript auf: kurz nachfassen (ohne MutationObserver)
   namen();
   [300, 1000, 2500, 5000].forEach(function (ms) { setTimeout(namen, ms); });
-  laden();
+  window.__osvaDaten = daten;
+  zeigen(aktuell, start);
 })();
 </script>

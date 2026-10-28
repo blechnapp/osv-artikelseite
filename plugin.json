@@ -2,7 +2,7 @@
   "name": "OSVArtikelseite",
   "namespace": "OSVArtikelseite",
   "type": "general",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "license": "proprietary",
   "author": "OSV",
   "shortDescription": "Artikelseite: Zubehör beim Kaufknopf, Empfehlungen als Kachelreihe, Ausführungen mit Namen, Vorschaubilder links.",

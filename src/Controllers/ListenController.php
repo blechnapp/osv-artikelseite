@@ -24,6 +24,34 @@ class ListenController extends Controller
     public function listen(Request $request, Response $response, ConfigRepository $config)
     {
         $start = microtime(true);
+        $minuten = max(0, (int)$config->get('OSVArtikelseite.cacheMinuten', '15'));
+
+        // Ab 0.1.3: Das Skript liest 302/303 aus den Ceres-Daten der Artikelseite (wie OSVCustomMeta 288/289)
+        // und fragt hier nur noch die Kacheldaten der genannten Varianten ab (?t=2866,1313,...).
+        $nurKacheln = $this->ids((string)$request->get('t', ''), self::MAX_KACHELN);
+        if (count($nurKacheln)) {
+            /** @var ItemSearchService $suche */
+            $suche = pluginApp(ItemSearchService::class);
+            $kacheln = [];
+            $factory = VariationList::getSearchFactory(['variationIds' => $nurKacheln, 'itemsPerPage' => count($nurKacheln)]);
+            $ergebnis = $suche->getResult($factory);
+            foreach (($ergebnis['documents'] ?? []) as $dokument) {
+                $d = $dokument['data'] ?? [];
+                $id = (int)($d['variation']['id'] ?? 0);
+                if ($id) {
+                    $kacheln[$id] = $this->kachel($d);
+                }
+            }
+            $body = json_encode([
+                't' => (object)$kacheln,
+                'd' => ['n' => count($nurKacheln), 'ms' => (int)round((microtime(true) - $start) * 1000)],
+            ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+            return $response->make($body, 200, [
+                'Content-Type'  => 'application/json; charset=utf-8',
+                'Cache-Control' => $minuten > 0 ? 'public, max-age=' . ($minuten * 60) : 'no-store',
+            ]);
+        }
+
         $ids = $this->ids((string)$request->get('ids', ''), self::MAX_VARIANTEN);
         $listen = [];
         $ziele = [];
@@ -94,7 +122,6 @@ class ListenController extends Controller
             }
         }
 
-        $minuten = max(0, (int)$config->get('OSVArtikelseite.cacheMinuten', '15'));
         $diag['ms'] = (int)round((microtime(true) - $start) * 1000);
         $body = json_encode([
             'v' => (object)$listen,
