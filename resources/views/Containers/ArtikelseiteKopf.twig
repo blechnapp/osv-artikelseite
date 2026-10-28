@@ -195,6 +195,19 @@ body.osva-eigen .widget-item-list { display: none !important; }
 .single .osva-karten .tab-pane ul li:before { content: ""; position: absolute; left: 5px; top: 10px; width: 6px; height: 6px; border-radius: 50%; background: #b08052; }
 .single .osva-karten .tab-pane table { max-width: 640px; }
 
+/* Rechner wie im Entwurf: begrenzte Breite mit Rand, warmer Seitengrund, Abstand zwischen Bild und Kaufbox (Bildpfeile bleiben wie bei Ceres) */
+@media (min-width: 992px) {
+  #page-body:has(> .single.page-content) { background: #faf7f2; }
+  .single.page-content { max-width: 1320px !important; margin-left: auto; margin-right: auto; padding-left: 24px !important; padding-right: 24px !important; padding-bottom: 40px; }
+  .single .widget-item-image { padding-top: 6px; }
+  .single .widget-item-image { margin-right: 26px; }
+  .single .widget-sticky > .widget-inner { margin-left: 26px; margin-top: 6px; }
+  .single .widget-item-image .single-carousel .owl-stage-outer { box-shadow: 0 6px 24px rgba(60,40,20,.08); }
+  .single .widget-item-image #thumb-carousel .image-container { background: #fff !important; }
+  .single .osva-karten .tab-content > .tab-pane { box-shadow: 0 2px 10px rgba(60,40,20,.05); }
+  .single .osva-empf { margin-top: 44px; }
+}
+
 @media (max-width: 991.98px) {
   .single .widget-sticky > .widget-inner { box-shadow: none; padding: 18px 16px 16px; margin-top: 12px; }
   .single .osva-ab-kopf { font-size: 18px; padding: 15px 46px 15px 18px; }

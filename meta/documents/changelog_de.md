@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.2.4 (28.10.2026)
+- Rechner wie im Entwurf: Inhalt auf 1.320 px mit Rand, warmer Seitengrund (#faf7f2), Abstand zwischen Bild und Kaufbox, Bild mit leichtem Schatten, Abschnitte mit Schatten. Bildpfeile bleiben wie bei Ceres.
+
 ## 0.2.3 (28.10.2026)
 - Klappkarten werden 20 s lang gehalten: baut Ceres den Reiter-Baustein neu auf, stellt das Skript sie wieder her (ohne doppelte Überschriften). Geprüft an a-966, a-1067, a-205, Rechner und Handy.
 
