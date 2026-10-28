@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.2.3 (28.10.2026)
+- Klappkarten werden 20 s lang gehalten: baut Ceres den Reiter-Baustein neu auf, stellt das Skript sie wieder her (ohne doppelte Überschriften). Geprüft an a-966, a-1067, a-205, Rechner und Handy.
+
 ## 0.2.2 (28.10.2026)
 - Klappkarten auch bei Artikeln, deren Reiter Ceres erst nach über 5 s aufbaut (a-205, a-1067): Nachfassen alle 0,4 s bis fertig, höchstens 16 s.
 
