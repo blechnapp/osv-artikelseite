@@ -1,5 +1,12 @@
 # Änderungen
 
+## 0.2.9 (30.10.2026)
+- Empfehlungen: Preis mit Sternchen, Warenkorb-Knopf (Ceres add-to-basket wie beim Zubehör), „Zum Artikel ›“; ganze Karte bleibt anklickbar. Getestet: legt in den Warenkorb (201, Ceres-Dialog), Rechner und Handy.
+- Zubehör: Preis mit Sternchen.
+- Artikelnummer und EAN als kleine Box unter der Höhe.
+- Beschreibung: leerer Anfangs-Absatz ausgeblendet (Abstand Titel → Text 18 px statt rund 70 px).
+- Wunschliste direkt über „Versandkostenfrei“ (4 px statt 27 px); PayPal-Ratenhinweis rückt dahinter.
+
 ## 0.2.8 (30.10.2026)
 - Rechner: Lücke zwischen Bild und Kaufbox 42 px statt 82 px, Bild und Box je 20 px breiter.
 - Bildpfeile als runde weiße Knöpfe mit dunkelblauem Pfeil, 12 px vom Bildrand, mit der Maus dunkelblau; am Handy 36 px.

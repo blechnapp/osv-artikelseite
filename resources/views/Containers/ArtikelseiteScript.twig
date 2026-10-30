@@ -132,6 +132,10 @@
         k.setAttribute("aria-expanded", o ? "true" : "false");
       });
     });
+    // Leere Absätze am Anfang eines Abschnitts (Beschreibung beginnt bei vielen Artikeln mit <p>&nbsp;</p>) ausblenden, sonst 40 px Lücke unter dem Titel
+    [].forEach.call(tab.querySelectorAll(".tab-pane p"), function (p) {
+      if (p === p.parentNode.firstElementChild && !(p.textContent || "").replace(/[\s\u00a0]+/g, "") && !p.querySelector("img, iframe")) p.classList.add("osva-weg");
+    });
     tab.classList.add("osva-karten");
     var grid = tab.closest(".widget-grid");
     if (grid) grid.classList.add("osva-ab-grid");
@@ -189,7 +193,7 @@
       return '<div class="osva-zb-zeile" data-id="' + e.id + '">' +
         '<a class="osva-zb-bild" href="' + esc(t.u) + '"><img src="' + esc(t.b) + '" alt="' + esc(t.alt || t.n) + '" width="64" height="64" loading="lazy"></a>' +
         '<a class="osva-zb-txt" href="' + esc(t.u) + '"><b>' + esc(t.n) + "</b><em>" + esc(t.vn) + "</em></a>" +
-        '<span class="osva-zb-preis">' + esc(t.p) + (t.uvp && t.uvpv > t.pv ? "<del>" + esc(t.uvp) + "</del>" : "") + "</span>" +
+        '<span class="osva-zb-preis">' + esc(t.p) + '<sup class="osva-stern">*</sup>' + (t.uvp && t.uvpv > t.pv ? "<del>" + esc(t.uvp) + "</del>" : "") + "</span>" +
         '<span class="osva-korb"><span></span></span></div>';
     }).join("");
     var w = korb.closest(".widget") || korb;
@@ -219,11 +223,14 @@
     box.className = "osva-empf";
     box.innerHTML = "<h2>" + esc(C.titelE) + '</h2><div class="osva-reihe">' + eintraege.map(function (e) {
       var t = e.t;
-      return '<a class="osva-k" href="' + esc(t.u) + '">' + (e.stern ? '<span class="osva-marke">' + esc(C.marke) + "</span>" : "") +
+      // ganze Karte klickbar über den Namens-Link (::after über die Karte), Warenkorb-Knopf liegt darüber
+      return '<div class="osva-k" data-id="' + e.id + '">' + (e.stern ? '<span class="osva-marke">' + esc(C.marke) + "</span>" : "") +
         '<span class="osva-k-bild"><img src="' + esc(t.b) + '" alt="' + esc(t.alt || t.n) + '" loading="lazy"></span>' +
-        '<span class="osva-k-txt"><span class="osva-k-name">' + esc(t.n) + '</span><span class="osva-k-meta">' + esc(t.vn) + "</span>" +
+        '<span class="osva-k-txt"><a class="osva-k-name" href="' + esc(t.u) + '">' + esc(t.n) + '</a><span class="osva-k-meta">' + esc(t.vn) + "</span>" +
         (t.av ? '<span class="osva-k-lief">' + esc(t.av) + "</span>" : "") +
-        '<span class="osva-k-preis">' + esc(t.p) + (t.uvp && t.uvpv > t.pv ? "<del>" + esc(t.uvp) + "</del>" : "") + "</span></span></a>";
+        '<span class="osva-k-fuss"><span class="osva-k-preis">' + esc(t.p) + '<sup class="osva-stern">*</sup>' + (t.uvp && t.uvpv > t.pv ? "<del>" + esc(t.uvp) + "</del>" : "") + "</span>" +
+        '<span class="osva-korb"><span></span></span></span>' +
+        '<span class="osva-k-mehr">Zum Artikel &rsaquo;</span></span></div>';
     }).join("") + "</div>";
     // an die Stelle der Ceres-Listen, sonst unter die Reiter
     var ziel = document.querySelector(".widget-item-list") || document.querySelector(".widget-feedback") || document.querySelector(".widget-tab");
@@ -231,8 +238,15 @@
       ziel = ziel.closest(".widget") || ziel;
       ziel.parentNode.insertBefore(box, ziel);
     } else return;
+    eintraege.forEach(function (e) {
+      var z = box.querySelector('.osva-k[data-id="' + e.id + '"] .osva-korb > span');
+      if (!z || !korbKnopf(z, e.id, e.t)) {
+        var k = box.querySelector('.osva-k[data-id="' + e.id + '"] .osva-korb');
+        if (k) k.style.display = "none";
+      }
+    });
     box.addEventListener("click", function (ev) {
-      var a = ev.target.closest && ev.target.closest("a.osva-k");
+      var a = ev.target.closest && ev.target.closest("a.osva-k-name");
       if (a) ga("select_item", C.titelE, eintraege.filter(function (e) { return a.getAttribute("href") === e.t.u; }));
     });
     ga("view_item_list", C.titelE, eintraege);
