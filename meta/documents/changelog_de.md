@@ -1,5 +1,11 @@
 # Änderungen
 
+## 0.2.10 (30.10.2026)
+- Ausführungen: Klick auf eine sichtbare Kachel lässt die übrigen stehen (vorher blitzte die 5. Kachel beim Klick auf die 4. kurz weg). Sichtbare Kacheln werden per eigenem Stil-Block festgelegt, nicht per Klasse an den Kacheln.
+- Klappkarten: nur die Beschreibung offen; Weitere Details, Abmessungen & Gewicht, Bewertungen zugeklappt. Im Kopf „Bewertungen“ Sterne und Anzahl. Klick auf die Bewertungszahl in der Kaufbox klappt die Bewertungen auf und scrollt hin.
+- Abstand Kartentitel → Text 10 px; Artikelnummer-Box 20 px über „Sie sparen“.
+- „Versandkostenfrei ab 69 €“ als leicht hervorgehobener grüner Hinweis.
+
 ## 0.2.9 (30.10.2026)
 - Empfehlungen: Preis mit Sternchen, Warenkorb-Knopf (Ceres add-to-basket wie beim Zubehör), „Zum Artikel ›“; ganze Karte bleibt anklickbar. Getestet: legt in den Warenkorb (201, Ceres-Dialog), Rechner und Handy.
 - Zubehör: Preis mit Sternchen.

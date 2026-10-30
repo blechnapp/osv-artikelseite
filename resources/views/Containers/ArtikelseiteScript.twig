@@ -57,6 +57,7 @@
 
   /* ---------- Ausführungen: erst eine Reihe, Rest per Knopf (wie im Entwurf) ---------- */
   // Der Knopf steht außerhalb des Ceres-Bausteins (dahinter im selben Kasten), damit Ceres ihn beim Wechsel nicht entfernt.
+  var sicht = null;
   function ausfuehrungenKlappen() {
     if (!C.aufbau) return;
     var w = document.querySelector(".single .widget-sticky .widget-attribute");
@@ -73,10 +74,22 @@
       w.classList.add("osva-v-zu");
       kn.addEventListener("click", function () { w.classList.toggle("osva-v-zu"); beschriften(); });
     }
-    // steht die gewählte Ausführung hinter der ersten Reihe, rückt sie per CSS in die erste Reihe
+    // Sichtbare Kacheln festhalten: erste Reihe, oder eine weniger plus die gewählte, wenn sie weiter hinten steht.
+    // Neu festgelegt wird nur, wenn die gewählte Kachel nicht sichtbar ist. Klickt man eine sichtbare an, bleibt alles stehen.
+    // Die Regel steht in einem eigenen Stil-Block, nicht als Klasse an den Kacheln: die setzt Ceres beim Wechsel neu.
     var boxen = [].slice.call(w.querySelectorAll(".v-s-boxes.images .v-s-box"));
     var akt = boxen.indexOf(w.querySelector(".v-s-boxes.images .v-s-box.active"));
-    if (w.classList.contains("osva-v-hinten") !== (akt >= reihe)) w.classList.toggle("osva-v-hinten", akt >= reihe);
+    if (!sicht || sicht.reihe !== reihe || sicht.n !== n || (akt >= 0 && sicht.idx.indexOf(akt) < 0)) {
+      var idx = [];
+      for (var i = 0; i < (akt >= reihe ? reihe - 1 : reihe); i++) idx.push(i);
+      if (akt >= reihe) idx.push(akt);
+      sicht = { reihe: reihe, n: n, idx: idx };
+      var st = document.getElementById("osva-v-stil");
+      if (!st) { st = document.createElement("style"); st.id = "osva-v-stil"; document.head.appendChild(st); }
+      st.textContent = ".single .widget-sticky .osva-v-zu.osva-v-fest .v-s-boxes.images .v-s-box:not(.active)" +
+        idx.map(function (j) { return ":not(:nth-child(" + (j + 1) + " of .v-s-box))"; }).join("") + " { display: none !important; }";
+    }
+    if (!w.classList.contains("osva-v-fest")) w.classList.add("osva-v-fest");
     function beschriften() {
       var t = w.classList.contains("osva-v-zu") ? "Alle " + n + " Ausführungen zeigen" : "Weniger anzeigen";
       if (kn.textContent !== t) kn.textContent = t;   // nur bei Änderung schreiben, sonst rechnet der Browser alle 0,4 s neu
@@ -98,6 +111,32 @@
   /* ---------- Abschnitte: Ceres-Reiter werden Klappkarten ---------- */
   // Nur Überschrift einsetzen und Klassen setzen; die Reiter-Leiste bleibt im DOM und wird per CSS versteckt,
   // dadurch rendert Ceres den Reiter-Baustein nicht neu.
+  function sterneInKopf(k) {
+    if (!k || k.querySelector(".osva-ab-sterne")) return;
+    var avg = document.querySelector(".single .widget-sticky .widget-feedback-average");
+    var st = avg && avg.querySelector(".feedback-stars-average");
+    var anz = avg && avg.querySelector(".small-stars a");
+    var n = anz ? (anz.textContent || "").replace(/[^0-9]/g, "") : "";
+    if (!st || !n || n === "0") return;
+    var sp = document.createElement("span");
+    sp.className = "osva-ab-sterne";
+    sp.appendChild(st.cloneNode(true));
+    sp.appendChild(document.createTextNode("(" + n + ")"));
+    k.appendChild(sp);
+  }
+
+  // Klick auf die Bewertungszahl oben in der Kaufbox: Bewertungen aufklappen und hinscrollen
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest(".single .widget-sticky .widget-feedback-average a");
+    if (!a) return;
+    var kopf = [].filter.call(document.querySelectorAll(".osva-ab-kopf"), function (k) { return /bewertung/i.test(k.textContent || ""); })[0];
+    if (!kopf) return;
+    ev.preventDefault();
+    var pane = kopf.parentNode;
+    if (!pane.classList.contains("osva-offen")) kopf.click();
+    pane.scrollIntoView({ behavior: "smooth", block: "start" });
+  });
+
   function abschnitte() {
     if (!C.aufbau) return;
     var tab = document.querySelector(".single .widget-tab");
@@ -122,9 +161,11 @@
       k.className = "osva-ab-kopf";
       k.textContent = titel[i];
       pane.insertBefore(k, pane.firstChild);
-      // Rechner: alles offen außer den Pflichtangaben; Handy: nur der erste Abschnitt (Beschreibung)
-      var pflicht = /verantwortlich|hersteller|gpsr|sicherheit/i.test(titel[i]);
-      var offen = gross ? !pflicht : i === 0;
+      // Nur die Beschreibung offen, alles andere zum Aufklappen (Kay 30.10.: Details, Maße, Bewertungen zu)
+      var offen = i === 0;
+      // Bewertungen: Sterne und Anzahl schon im geschlossenen Kopf zeigen
+      // (die Sterne baut Ceres oft erst später; der Takt unten trägt sie nach)
+      if (/bewertung/i.test(titel[i])) sterneInKopf(k);
       pane.classList.toggle("osva-offen", offen);
       k.setAttribute("aria-expanded", offen ? "true" : "false");
       k.addEventListener("click", function () {
@@ -299,6 +340,7 @@
   var takt = setInterval(function () {
     versuche++;
     namen(); ausfuehrungenKlappen(); abschnitte();
+    sterneInKopf([].filter.call(document.querySelectorAll(".osva-ab-kopf"), function (k) { return /bewertung/i.test(k.textContent || ""); })[0]);
     // 20 s lang prüfen, auch wenn die Karten schon stehen: baut Ceres neu auf, werden sie wiederhergestellt
     if (versuche >= 50) clearInterval(takt);
   }, 400);

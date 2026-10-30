@@ -154,9 +154,9 @@ body.osva-eigen .widget-item-list { display: none !important; }
 
 /* Ausführungen: erst eine Reihe (Rechner 5, Handy 4), die gewählte bleibt immer sichtbar, Rest per Knopf */
 .single .widget-sticky .widget-attribute .v-s-boxes { padding: 8px 0 4px !important; }
-.single .widget-sticky .osva-v-zu .v-s-boxes.images .v-s-box:nth-of-type(n+6):not(.active) { display: none !important; }
-/* gewählte Ausführung steht weiter hinten: eine weniger zeigen, damit sie in die erste Reihe rückt */
-.single .widget-sticky .osva-v-zu.osva-v-hinten .v-s-boxes.images .v-s-box:nth-of-type(n+5):not(.active) { display: none !important; }
+/* bis das Skript läuft: erste Reihe; danach legt das Skript fest, welche Kacheln sichtbar bleiben (osva-v-fest, eigener Stil-Block),
+   damit beim Klick auf eine sichtbare Kachel nichts verschwindet (Kay 30.10.: 5. Kachel blitzte beim Klick auf die 4. kurz weg) */
+.single .widget-sticky .osva-v-zu:not(.osva-v-fest) .v-s-boxes.images .v-s-box:nth-of-type(n+6):not(.active) { display: none !important; }
 .single .widget-sticky .osva-v-mehr { order: 20; display: block; width: 100%; margin: 2px 0 14px; padding: 9px; border: 1.5px solid #e5dfd6; border-radius: 5px; background: #fff; font-weight: 600; font-size: 15px; color: #0c2a5e; cursor: pointer; }
 .single .widget-sticky .osva-v-mehr:hover { border-color: #b08052; background: #faf7f2; }
 /* leere Ceres-Bausteine ohne Abstand */
@@ -194,7 +194,9 @@ body.osva-eigen .widget-item-list { display: none !important; }
 .single .osva-karten .tab-pane:not(.osva-offen) > :not(.osva-ab-kopf) { display: none !important; }
 .single .osva-ab-kopf { display: block; width: 100%; text-align: left; background: none; border: 0; padding: 18px 52px 18px 26px; position: relative; font-size: 21px; font-weight: 600; color: #0c2a5e; cursor: pointer; }
 .single .osva-ab-kopf:after { content: ""; position: absolute; right: 24px; top: 24px; width: 9px; height: 9px; border-right: 2px solid #b08052; border-bottom: 2px solid #b08052; transform: rotate(45deg); transition: .2s; }
-.single .osva-offen > .osva-ab-kopf { border-bottom: 1px solid #e5dfd6; margin-bottom: 18px; }
+.single .osva-offen > .osva-ab-kopf { border-bottom: 1px solid #e5dfd6; margin-bottom: 10px; }
+.single .osva-ab-sterne { display: inline-flex; align-items: center; gap: 6px; margin-left: 14px; font-size: 14px; font-weight: 400; color: #6b6b6b; vertical-align: middle; }
+.single .osva-ab-sterne .feedback-stars-average { margin: 0; }
 .single .osva-offen > .osva-ab-kopf:after { transform: rotate(-135deg); top: 28px; }
 .single .osva-karten .tab-pane h2 { font-size: 21px; color: #0c2a5e; margin: 0 0 12px; }
 .single .osva-karten .tab-pane p { font-size: 16px; line-height: 1.7; color: #3c3c3c; }
@@ -219,7 +221,7 @@ body.osva-eigen .widget-item-list { display: none !important; }
 .single .osva-karten .tab-pane p.osva-weg { display: none; }
 
 /* Artikelnummer und EAN als kleine Box direkt unter der Höhe (Kay 30.10.) */
-.single .widget-sticky > .widget-inner > .articlenumber { order: 5; align-self: flex-start; margin: 0 0 14px !important; }
+.single .widget-sticky > .widget-inner > .articlenumber { order: 5; align-self: flex-start; margin: 0 !important; padding-bottom: 16px; }
 .single .widget-sticky > .widget-inner > .articlenumber .widget-inner { display: flex; flex-wrap: wrap; gap: 2px 12px; background: #f6f3ee; border-radius: 6px; padding: 5px 10px !important; }
 .single .widget-sticky > .widget-inner > .articlenumber p, .single .widget-sticky > .widget-inner > .articlenumber h6 { margin: 0 !important; font-size: 12px; font-weight: 400; line-height: 1.5; color: #6b6b6b; }
 .single .widget-sticky > .widget-inner > .articlenumber strong { font-weight: 400; }
@@ -229,6 +231,10 @@ body.osva-eigen .widget-item-list { display: none !important; }
    Er rückt hinter „Versandkostenfrei“, die Wunschliste steht damit direkt darüber */
 .single .widget-sticky > .widget-inner > .paypal-installment-banner-graphical { order: 41; }
 .single .widget-sticky > .widget-inner > .widget-add-to-wish-list { margin-bottom: 4px !important; }
+
+/* Versandkostenfrei als leicht hervorgehobener Hinweis (Kay 30.10.) */
+.single .widget-sticky > .widget-inner > .widget-warning > .widget-inner { display: inline-flex !important; align-items: center; background: #eef6ee !important; border: 1px solid #cfe3cf !important; border-radius: 6px; padding: 7px 12px !important; margin: 8px 0 6px !important; }
+.single .widget-sticky > .widget-inner > .widget-warning h4, .single .widget-sticky > .widget-inner > .widget-warning h4 span { font-size: 14px; font-weight: 500; color: #1f5e2e !important; margin: 0; }
 
 /* Rechner wie im Entwurf: begrenzte Breite mit Rand, warmer Seitengrund, Abstand zwischen Bild und Kaufbox (Bildpfeile bleiben wie bei Ceres) */
 @media (min-width: 992px) {
@@ -275,8 +281,7 @@ body.osva-eigen .widget-item-list { display: none !important; }
   .single .widget-item-image #thumb-carousel .image-container { padding: 3px !important; border: 1.5px solid #e5dfd6; border-radius: 6px; }
   .single .widget-item-image #thumb-carousel .owl-nav { display: none; }
   .single .widget-sticky .title-outer h1 { font-size: 23px; }
-  .single .widget-sticky .osva-v-zu .v-s-boxes.images .v-s-box:nth-of-type(n+5):not(.active) { display: none !important; }
-  .single .widget-sticky .osva-v-zu.osva-v-hinten .v-s-boxes.images .v-s-box:nth-of-type(n+4):not(.active) { display: none !important; }
+  .single .widget-sticky .osva-v-zu:not(.osva-v-fest) .v-s-boxes.images .v-s-box:nth-of-type(n+5):not(.active) { display: none !important; }
   .single .widget-sticky .widget-item-price .price { font-size: 30px !important; }
 }
 {% endif %}
