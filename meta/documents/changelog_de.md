@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.2.8 (30.10.2026)
+- Rechner: Lücke zwischen Bild und Kaufbox 42 px statt 82 px, Bild und Box je 20 px breiter.
+- Bildpfeile als runde weiße Knöpfe mit dunkelblauem Pfeil, 12 px vom Bildrand, mit der Maus dunkelblau; am Handy 36 px.
+
 ## 0.2.7 (28.10.2026)
 - Handy: Springen beim Laden behoben (CLS 0,084 → 0,002, gemessen an a-966, a-1067, a-205). Ceres reserviert für den leeren Bildbereich per ::before 70vh (591 px); jetzt genau die gezeigten 369 px. Bild und Vorschaubild-Zeile haben ihre Höhe schon vor dem Aufbau des Karussells.
 
