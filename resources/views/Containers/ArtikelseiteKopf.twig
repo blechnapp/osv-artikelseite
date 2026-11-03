@@ -400,5 +400,9 @@ body.osva-eigen .widget-item-list { display: none !important; }
 .single .osva-karten { margin-bottom: 0 !important; }
 .single .osva-ab-grid { margin-bottom: 0 !important; }
 .single .osva-empf { margin-top: 28px !important; }
+/* Abmessungen & Gewicht: Tabelle wie „Weitere Details“, Absätze dahinter unsichtbar */
+.single .osva-karten .osva-abm-quelle, .single .osva-karten .widget-inner:has(> p.osva-abm-quelle) { display: none !important; }
+.single .osva-karten table.osva-abm { margin: 4px 0 0; }
+.single .osva-karten table.osva-abm td:first-child { width: 57%; }
 {% endif %}
 </style>

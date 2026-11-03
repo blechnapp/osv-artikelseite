@@ -249,11 +249,45 @@
       z("etikett", "Artikelnummer", nr, 1) + z("code", "EAN", ean, 1) + "</div>";
   }
 
+  /* ---------- Abmessungen & Gewicht als Tabelle wie „Weitere Details“ (Kay 03.11.) ---------- */
+  // Die Absätze („• Abmessungen des Artikels LxBxH: 7 x 7 x 13 cm“) bleiben als Datenquelle im DOM, nur unsichtbar;
+  // Ceres tauscht ihre Werte beim Wechsel der Ausführung, die Tabelle wird dann neu gebaut.
+  var ABM = [
+    [/des Artikels/i, "Artikel (L × B × H)", 1],
+    [/Originalverpackung/i, "Originalverpackung (L × B × H)", 2],
+    [/Versandverpackung/i, "Versandverpackung (L × B × H)", 3],
+    [/^Produktgewicht/i, "Gewicht Artikel", 4],
+    [/^Versandgewicht/i, "Gewicht inkl. Versandverpackung", 5]
+  ];
+  function abmTabelle() {
+    if (!C.aufbau) return;
+    var k = [].filter.call(document.querySelectorAll(".osva-ab-kopf"), function (x) { return /Abmessung/i.test(x.textContent || ""); })[0];
+    if (!k) return;
+    [].forEach.call(k.parentNode.querySelectorAll(".widget-text .widget-inner"), function (wi) {
+      var ps = [].filter.call(wi.querySelectorAll(":scope > p"), function (q) { return /:/.test(q.textContent || ""); });
+      if (!ps.length) return;
+      var zeilen = ps.map(function (q, i) {
+        var t = (q.textContent || "").replace(/^[\s•·\-]+/, "").replace(/\s+/g, " ").trim();
+        var j = t.indexOf(":"), name = t.slice(0, j).trim(), wert = t.slice(j + 1).trim();
+        var reg = ABM.filter(function (r) { return r[0].test(name); })[0];
+        wert = wert.replace(/\s*x\s*/g, " × ").replace(/(\d)\.(\d)/g, "$1,$2");
+        return { n: reg ? reg[1] : name.replace(/\s*LxBxH$/i, " (L × B × H)"), w: wert, o: reg ? reg[2] : 10 + i };
+      }).filter(function (z) { return z.w; }).sort(function (a, b) { return a.o - b.o; });
+      var stand = zeilen.map(function (z) { return z.n + "=" + z.w; }).join("|");
+      var tb = wi.parentNode.querySelector(":scope > .osva-abm");
+      if (tb && tb.getAttribute("data-stand") === stand) return;
+      ps.forEach(function (q) { q.classList.add("osva-abm-quelle"); });
+      if (!tb) { tb = document.createElement("table"); tb.className = "table table-striped table-hover table-sm osva-abm"; wi.parentNode.appendChild(tb); }
+      tb.setAttribute("data-stand", stand);
+      tb.innerHTML = "<tbody>" + zeilen.map(function (z) { return "<tr><td>" + esc(z.n) + "</td><td>" + esc(z.w) + "</td></tr>"; }).join("") + "</tbody>";
+    });
+  }
+
   // Neue Teile erst einsetzen, wenn Ceres (Vue) die Seite übernommen hat: Eingriffe vorher lassen Vue beim Übernehmen
   // die ganze Seite neu aufbauen (gemessen 03.11.: Seite sprang, CLS 0,33)
   function neuTeile() {
     if (!(window.vueApp && window.vueApp._isMounted)) return;
-    hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise();
+    hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise(); abmTabelle();
   }
 
   /* ---------- Handy: Herz im Bild, Kaufleiste, Wischhinweise ---------- */

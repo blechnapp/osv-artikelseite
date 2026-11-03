@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.2 (03.11.2026)
+- Abmessungen & Gewicht als Tabelle wie „Weitere Details“: Artikel, Originalverpackung, Versandverpackung (L × B × H), Gewicht Artikel, Gewicht inkl. Versandverpackung; „x“ → „×“, Dezimalkomma. Die Ceres-Absätze bleiben unsichtbar als Datenquelle, die Tabelle folgt dem Wechsel der Ausführung.
+
 ## 0.3.1 (03.11.2026)
 - MwSt-/Versandhinweis in der Kaufbox und unter den Empfehlungen einheitlich grau mit Info-Symbol, „Versandkosten“-Link dezent unterstrichen.
 - Artikeldaten: neue Zeile Gewicht (Eigenschaft 85) mit Symbol.
