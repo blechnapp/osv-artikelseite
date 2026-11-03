@@ -313,6 +313,7 @@ body.osva-eigen .widget-item-list { display: none !important; }
 .single .osva-ab-sterne .feedback-stars-average { height: 17px !important; line-height: 17px !important; margin: 0 !important; }
 .single .osva-ab-sterne .feedback-star, .single .osva-ab-sterne .feedback-star i { font-size: 16px !important; height: 17px !important; line-height: 17px !important; }
 .single .osva-ab-sterne .feedback-star { width: 17px !important; }
+.single .osva-ab-sterne .feedback-stars-average, .single .osva-ab-sterne .feedback-stars-background { width: 85px !important; }
 /* Beschreibung: kein Abstand vor dem ersten Inhalt */
 .single .osva-karten .tab-pane > .my-4 { margin-top: 0 !important; }
 .single .osva-karten .osva-weg { display: none !important; }
@@ -389,5 +390,15 @@ body.osva-eigen .widget-item-list { display: none !important; }
   .osva-punkte i.an { background: #0c2a5e; width: 18px; border-radius: 4px; }
 }
 @media (min-width: 576px) { .osva-herz, .osva-leiste, .osva-punkte, .osva-anzahl { display: none !important; } }
+
+/* MwSt-/Versandhinweis (Kaufbox und unter den Empfehlungen): ein ruhiger Grauton statt Grau + Blau, Info-Symbol davor (Kay 03.11.) */
+.single .widget-sticky > .widget-inner > .vat .widget-inner, .single .widget-code > .widget-inner > .vat { display: flex; align-items: flex-start; gap: 8px; font-size: 12.5px !important; line-height: 1.5; color: #7a7a7a !important; }
+.single .widget-sticky > .widget-inner > .vat .widget-inner::before, .single .widget-code > .widget-inner > .vat::before { content: ""; flex: 0 0 15px; height: 15px; margin-top: 2px; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b08052' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M12 11v6M12 7.5v.5'/%3E%3C/svg%3E") no-repeat center / contain; }
+.single .widget-sticky > .widget-inner > .vat a, .single .widget-code > .widget-inner > .vat a { color: inherit !important; text-decoration: underline; text-decoration-color: #d6cbbb; text-underline-offset: 2px; }
+.single .widget-sticky > .widget-inner > .vat a:hover, .single .widget-code > .widget-inner > .vat a:hover { color: #0c2a5e !important; }
+/* Abstand Klappkarten → Empfehlungen (Kay 03.11.: 86 px zu groß) */
+.single .osva-karten { margin-bottom: 0 !important; }
+.single .osva-ab-grid { margin-bottom: 0 !important; }
+.single .osva-empf { margin-top: 28px !important; }
 {% endif %}
 </style>

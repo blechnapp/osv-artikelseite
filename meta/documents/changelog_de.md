@@ -1,5 +1,10 @@
 # Änderungen
 
+## 0.3.1 (03.11.2026)
+- MwSt-/Versandhinweis in der Kaufbox und unter den Empfehlungen einheitlich grau mit Info-Symbol, „Versandkosten“-Link dezent unterstrichen.
+- Artikeldaten: neue Zeile Gewicht (Eigenschaft 85) mit Symbol.
+- Abstand Klappkarten → „Unsere Empfehlungen“ 28 px statt 86 px; Sterne im Bewertungskopf direkt neben der Anzahl.
+
 ## 0.3.0 (03.11.2026)
 - Handy: Kopf kompakter (Logo 46 px), Seite nicht mehr breiter als der Bildschirm; Kaufbox ohne Karte in der Reihenfolge Name, Höhe, Sterne, Preis, Lieferung, Ausführungen, Warenkorb.
 - Handy: Ausführungen als Wischzeile mit „N Ausführungen ›“ und Ausblendung am Rand; Herz oben rechts im Bild (nutzt die Ceres-Wunschliste); Kaufleiste unten mit Bild, Preis und „In den Warenkorb“ (löst den Ceres-Knopf aus), Siegel/Captcha rücken darüber; Empfehlungen mit Punkten und Ausblendung als Wischhinweis.
