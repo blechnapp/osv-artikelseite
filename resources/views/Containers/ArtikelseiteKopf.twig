@@ -220,12 +220,21 @@ body.osva-eigen .widget-item-list { display: none !important; }
 /* Beschreibung: leerer Anfangs-Absatz weg (Skript setzt osva-weg) */
 .single .osva-karten .tab-pane p.osva-weg { display: none; }
 
-/* Artikelnummer und EAN als kleine Box direkt unter der Höhe (Kay 30.10.) */
-.single .widget-sticky > .widget-inner > .articlenumber { order: 5; align-self: flex-start; margin: 0 !important; padding-bottom: 16px; }
-.single .widget-sticky > .widget-inner > .articlenumber .widget-inner { display: flex; flex-wrap: wrap; gap: 2px 12px; background: #f6f3ee; border-radius: 6px; padding: 5px 10px !important; }
-.single .widget-sticky > .widget-inner > .articlenumber p, .single .widget-sticky > .widget-inner > .articlenumber h6 { margin: 0 !important; font-size: 12px; font-weight: 400; line-height: 1.5; color: #6b6b6b; }
-.single .widget-sticky > .widget-inner > .articlenumber strong { font-weight: 400; }
-.single .widget-sticky > .widget-inner > .articlenumber span { color: #1c1c1c; }
+/* Artikeldaten (Kay 03.11., Variante C): Hersteller, Maße, Artikelnummer, EAN als Zeilen mit Symbol, keine Box.
+   Das Skript baut den Block #osva-daten; der Ceres-Baustein Artikelnummer/EAN bleibt als Datenquelle im DOM, unsichtbar. */
+.single .widget-sticky > .widget-inner > .articlenumber { display: none !important; }
+.single .widget-sticky > .widget-inner > #osva-daten { order: 41; margin: 4px 0 0; }
+.osva-d { display: flex; flex-direction: column; gap: 7px; }
+.osva-d-z { display: flex; align-items: center; gap: 9px; font-size: 14px; line-height: 1.35; color: #4a4a4a; }
+.osva-d-z svg { flex: 0 0 18px; }
+.osva-d-z b { font-weight: 600; color: #1c1c1c; }
+.osva-d-z.klein { font-size: 13px; color: #7a7a7a; }
+.osva-d-z.klein b { font-weight: 500; color: #4a4a4a; }
+/* Höhe immer direkt unter Name und Ausführung (Kay 03.11.). Reiner CSS-Selektor (Textbaustein nach dem Titel), damit beim Laden nichts springt;
+   der leere Textbaustein davor fällt mit und hat keine Höhe. */
+.single .widget-sticky > .widget-inner > .title-outer ~ .widget-text:not(.widget-warning):not(.av-date):not(.articlenumber):not(.producertag) { order: 2; margin: -2px 0 10px !important; }
+.single .widget-sticky > .widget-inner > .title-outer ~ .widget-text:not(.widget-warning):not(.av-date):not(.articlenumber):not(.producertag) .widget-inner { padding: 0 !important; }
+.single .widget-sticky > .widget-inner > .title-outer ~ .widget-text:not(.widget-warning):not(.av-date):not(.articlenumber):not(.producertag) p { margin: 0 !important; font-size: 14.5px !important; color: #4a4a4a !important; }
 
 /* Wunschliste → Versandkostenfrei: PayPal setzt dazwischen seinen Ratenhinweis (iframe, bei kleinen Preisen 21 px leer).
    Er rückt hinter „Versandkostenfrei“, die Wunschliste steht damit direkt darüber */
@@ -284,5 +293,101 @@ body.osva-eigen .widget-item-list { display: none !important; }
   .single .widget-sticky .osva-v-zu:not(.osva-v-fest) .v-s-boxes.images .v-s-box:nth-of-type(n+5):not(.active) { display: none !important; }
   .single .widget-sticky .widget-item-price .price { font-size: 30px !important; }
 }
+
+/* ===== 0.3.0 (Kay 03.11.) ===== */
+/* Hauptbild: Rahmen schneidet das Bild an den runden Ecken mit ab (clip-path, auch Safari mit verschobenem Karussell) */
+.single .widget-item-image .single-carousel { border: 1px solid #eee8de; border-radius: 12px; clip-path: inset(0 round 12px); background: #fff; }
+.single .widget-item-image .single-carousel .owl-stage-outer { border: 0 !important; border-radius: 0 !important; box-shadow: none !important; }
+/* Rechner: Bildfläche quadratisch nach der Spaltenbreite statt 70 % der Fensterhöhe (Kay: Rahmen wuchs nicht mit dem Bild) */
+@media (min-width: 576px) {
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item,
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 > a { height: auto !important; }
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 { position: relative; height: 0 !important; padding-bottom: 100% !important; }
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 > a { position: absolute !important; inset: 0; display: flex !important; align-items: center; justify-content: center; }
+  .single .widget-item-image .owl-carousel.single-carousel .owl-stage-outer .owl-item .prop-1-1 img { position: static !important; max-width: 94% !important; max-height: 94% !important; width: auto !important; height: auto !important; object-fit: contain; }
+  .single .widget-item-image:empty::before { height: auto !important; padding-bottom: 100% !important; }
+}
+@media (min-width: 992px) { .single .widget-item-image .single-carousel { box-shadow: 0 6px 24px rgba(60,40,20,.08); } }
+/* Bewertungen-Kopf: Sterne in Schriftgröße, mittig zum Wort (Ceres-Sterne liegen in zwei Schichten übereinander, nur verkleinern) */
+.single .osva-ab-sterne { vertical-align: -1px; line-height: 1; }
+.single .osva-ab-sterne .feedback-stars-average { height: 17px !important; line-height: 17px !important; margin: 0 !important; }
+.single .osva-ab-sterne .feedback-star, .single .osva-ab-sterne .feedback-star i { font-size: 16px !important; height: 17px !important; line-height: 17px !important; }
+.single .osva-ab-sterne .feedback-star { width: 17px !important; }
+/* Beschreibung: kein Abstand vor dem ersten Inhalt */
+.single .osva-karten .tab-pane > .my-4 { margin-top: 0 !important; }
+.single .osva-karten .osva-weg { display: none !important; }
+
+/* Handy (Kay 03.11.): Kopf kompakt, Kaufbox ohne Karte, Ausführungen als Wischzeile, Kaufleiste, Herz im Bild */
+@media (max-width: 575.98px) {
+  /* Kopf ragt rechts 15 px über den Bildschirm (Ceres-Raster), dadurch war die ganze Seite zu breit: abschneiden */
+  body:has(.single.page-content) #page-header { overflow-x: clip; }
+  body:has(.single.page-content) #page-header .headerlogo { margin: 10px 0 6px !important; text-align: center; }
+  body:has(.single.page-content) #page-header .headerlogo img { height: 46px !important; max-height: 46px !important; width: auto !important; }
+  body:has(.single.page-content) #page-header .widget-two-col.unfixed > .widget-inner { padding-bottom: 0 !important; }
+  body:has(.single.page-content) { overflow-x: hidden; }
+
+  /* Bild: Rahmen geschlossen, Herz oben rechts */
+  .single .widget-item-image #thumb-carousel { height: 54px !important; margin-top: 8px; }
+  .single .widget-item-image #thumb-carousel .owl-item { width: 54px !important; }
+  .osva-herz { position: absolute; top: 10px; right: 10px; z-index: 5; width: 42px; height: 42px; border: 0; border-radius: 50%; background: rgba(255,255,255,.96); box-shadow: 0 2px 10px rgba(12,42,94,.16); display: flex; align-items: center; justify-content: center; color: #0c2a5e; padding: 0; }
+  .osva-herz.an svg { fill: #b3261e; stroke: #b3261e; }
+
+  /* Kaufbox ohne Karte; Reihenfolge: Name, Höhe, Sterne, Preis, Lieferung, Ausführungen, Warenkorb, Zubehör, Versandhinweis, Daten, MwSt */
+  .single div:has(> .widget-sticky) { padding-top: 14px !important; padding-bottom: 0 !important; }
+  .single .widget-sticky > .widget-inner { background: none !important; border: 0 !important; box-shadow: none !important; padding: 0 2px !important; }
+  .single .widget-sticky > .widget-inner > * { order: 50 !important; }
+  .single .widget-sticky > .widget-inner > .title-outer { order: 1 !important; margin-bottom: 0 !important; }
+  .single .widget-sticky > .widget-inner > .title-outer h1 { margin-bottom: 2px !important; }
+  .single .widget-sticky .title-outer h1 { font-size: 21px !important; margin: 0 0 4px !important; }
+  .single .widget-sticky .title-outer h1 > span + span { font-size: 16px !important; line-height: 1.35; }
+  .single .widget-sticky > .widget-inner > .title-outer ~ .widget-text:not(.widget-warning):not(.av-date):not(.articlenumber):not(.producertag) { order: 1 !important; margin: 0 0 8px !important; }
+  .single .widget-sticky > .widget-inner > .widget-feedback-average { order: 2 !important; margin: 0 0 10px !important; }
+  .single .widget-sticky > .widget-inner > .widget-item-price { order: 3 !important; border-top: 0 !important; padding-top: 0 !important; margin: 0 !important; }
+  .single .widget-sticky .widget-item-price .price { font-size: 28px !important; }
+  .single .widget-sticky .widget-item-price .base-price { font-size: 12.5px !important; margin-top: 0 !important; }
+  .single .widget-sticky > .widget-inner > .widget-code:not(.vat) { order: 4 !important; margin: 4px 0 0 !important; }
+  .single .widget-sticky .widget-code:not(.vat) #osv-badge { font-size: 12.5px !important; padding: 3px 8px !important; border-radius: 4px; }
+  .single .widget-sticky > .widget-inner > .widget-availability { order: 5 !important; margin: 8px 0 14px !important; }
+  .single .widget-sticky .widget-availability .availability { font-size: 14px !important; }
+  .single .widget-sticky > .widget-inner > .widget-attribute { order: 6 !important; border-top: 1px solid #ece5da !important; padding-top: 12px !important; margin-bottom: 4px !important; }
+  .single .widget-sticky .osva-v-mehr { display: none !important; }
+  /* Platz für Ausführungen und Spar-Hinweis vorher freihalten, sonst springt der Warenkorb beim Laden (gemessen 03.11.) */
+  html.osva-ausf .single .widget-sticky > .widget-inner > .widget-attribute { min-height: 165px; }
+  .single .widget-sticky > .widget-inner:has(.crossprice) > .widget-code:not(.vat) { min-height: 29px; }
+  .single .widget-sticky .widget-attribute .v-s-boxes.images { display: flex !important; flex-wrap: nowrap !important; overflow-x: auto; gap: 8px !important; scroll-snap-type: x proximity; scrollbar-width: none; margin: 0 !important; padding: 8px 2px 6px !important;
+    -webkit-mask-image: linear-gradient(to right, #000 82%, transparent); mask-image: linear-gradient(to right, #000 82%, transparent); }
+  .single .widget-sticky .widget-attribute .v-s-boxes.images.osva-ende { -webkit-mask-image: none; mask-image: none; }
+  .single .widget-sticky .widget-attribute .v-s-boxes.images::-webkit-scrollbar { display: none; }
+  .single .widget-sticky .widget-attribute .v-s-boxes.images .v-s-box { display: flex !important; flex: 0 0 84px; scroll-snap-align: start; }
+  .osva-anzahl { float: right; border: 0; background: none; padding: 0; font-size: 13.5px; font-weight: 600; color: #b08052; }
+  .single .widget-sticky > .widget-inner > .widget-add-to-basket { order: 7 !important; margin: 10px 0 14px !important; }
+  .single .widget-sticky > .widget-inner > .osva-zb { order: 8 !important; margin-bottom: 0 !important; }
+  .single .widget-sticky > .widget-inner > .paypal-installment-banner-graphical { order: 8 !important; margin: 0 !important; }
+  .single .widget-sticky > .widget-inner > .widget-warning { order: 9 !important; margin: 0 0 16px !important; }
+  .single .widget-sticky > .widget-inner > #osva-daten { order: 21 !important; margin: 0 !important; }
+  .single .widget-sticky > .widget-inner > .vat { order: 22 !important; margin: 10px 0 0 !important; }
+  .single .widget-sticky > .widget-inner > .producertag, .single .widget-sticky > .widget-inner > .widget-add-to-wish-list { display: none !important; }
+
+  .single .osva-karten { margin-top: 16px !important; }
+
+  /* Kaufleiste unten, solange der Warenkorb-Knopf nicht im Bild ist */
+  .osva-leiste { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1040; display: flex; align-items: center; gap: 12px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.97); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 -4px 18px rgba(12,42,94,.12); box-sizing: border-box; transition: transform .2s; }
+  .osva-leiste.weg { transform: translateY(110%); }
+  .osva-leiste img { width: 44px; height: 44px; object-fit: contain; border-radius: 6px; border: 1px solid #eee8de; background: #fff; }
+  .osva-leiste .p { font-size: 19px; font-weight: 700; color: #0c2a5e; line-height: 1.1; white-space: nowrap; }
+  .osva-leiste .p small { display: block; font-size: 11px; font-weight: 400; color: #6b6b6b; }
+  .osva-leiste button { flex: 1; min-height: 48px; border: 0; border-radius: 8px; background: #0c2a5e; color: #fff; font-size: 16px; font-weight: 600; }
+  body.osva-mit-leiste { padding-bottom: 76px; }
+  /* Siegel und Chat unten hebt das Skript über die Leiste (Klasse osva-hoch) */
+  .osva-hoch { transform: translateY(-78px) !important; transition: transform .2s !important; }
+
+  /* Empfehlungen: nicht am Rand, Ausblendung + Punkte als Wischhinweis */
+  .osva-reihe { margin: 0 !important; padding: 2px 2px 10px !important; -webkit-mask-image: linear-gradient(to right, #000 85%, transparent); mask-image: linear-gradient(to right, #000 85%, transparent); }
+  .osva-reihe.osva-ende { -webkit-mask-image: none; mask-image: none; }
+  .osva-punkte { display: flex; justify-content: center; gap: 7px; margin: 4px 0 6px; }
+  .osva-punkte i { width: 7px; height: 7px; border-radius: 50%; background: #d9cfc0; transition: width .2s; }
+  .osva-punkte i.an { background: #0c2a5e; width: 18px; border-radius: 4px; }
+}
+@media (min-width: 576px) { .osva-herz, .osva-leiste, .osva-punkte, .osva-anzahl { display: none !important; } }
 {% endif %}
 </style>

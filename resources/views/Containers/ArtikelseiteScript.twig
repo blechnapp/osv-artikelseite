@@ -39,6 +39,8 @@
   }
   var start = startDaten();
   var aktuell = start && start.variation ? start.variation.id : 0;
+  // Ceres baut die Ausführungs-Kacheln erst nach dem Laden auf; Platz vorher freihalten (Klasse am <html>, außerhalb von Vue)
+  if (start && start.attributes && start.attributes.length) document.documentElement.classList.add("osva-ausf");
 
   /* ---------- Ausführungen mit Namen ---------- */
   function namen() {
@@ -173,13 +175,204 @@
         k.setAttribute("aria-expanded", o ? "true" : "false");
       });
     });
-    // Leere Absätze am Anfang eines Abschnitts (Beschreibung beginnt bei vielen Artikeln mit <p>&nbsp;</p>) ausblenden, sonst 40 px Lücke unter dem Titel
-    [].forEach.call(tab.querySelectorAll(".tab-pane p"), function (p) {
-      if (p === p.parentNode.firstElementChild && !(p.textContent || "").replace(/[\s\u00a0]+/g, "") && !p.querySelector("img, iframe")) p.classList.add("osva-weg");
-    });
+    // Leere Absätze und Zeilenumbrüche vor dem ersten Inhalt ausblenden (Beschreibungen beginnen oft mit <p>&nbsp;</p>, <br> oder leeren Bausteinen)
+    // nur in der Beschreibung: andere Abschnitte (Bewertungen) füllt Ceres erst später, dort darf nichts als leer gelten
+    if (ziele[0]) leerAnfang(ziele[0]);
     tab.classList.add("osva-karten");
     var grid = tab.closest(".widget-grid");
     if (grid) grid.classList.add("osva-ab-grid");
+  }
+
+  function leer(e) { return !(e.textContent || "").replace(/[\s\u00a0]+/g, "") && !e.querySelector("img, iframe, video, table"); }
+  function leerAnfang(pane) {
+    var weiter = true;
+    (function lauf(el) {
+      [].forEach.call(el.children, function (c) {
+        if (!weiter || c.classList.contains("osva-ab-kopf")) return;
+        var leerbar = /^(P|BR|SPAN|H[1-6])$/.test(c.tagName) || (c.tagName === "DIV" && /\bwidget-(text|inner)\b/.test(c.className));
+        if (c.tagName === "BR" || (leerbar && leer(c))) { c.classList.add("osva-weg"); return; }
+        if (/^(P|H[1-6]|UL|OL|LI|TABLE|IMG)$/.test(c.tagName) || !c.children.length) { weiter = false; return; }
+        lauf(c);
+      });
+    })(pane);
+  }
+
+  /* ---------- Höhe unter dem Namen, Artikeldaten mit Symbolen (Kay 03.11.) ---------- */
+  var SVG = {
+    haus: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" aria-hidden="true"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-6h6v6"/></svg>',
+    lineal: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M7 12l2 2M10 9l1.5 1.5M13 6l2 2"/></svg>',
+    etikett: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>',
+    code: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" aria-hidden="true"><path d="M3 5v14M7 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg>',
+    herz: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>'
+  };
+  var masse = {};   // Variante -> "10 × 10 × 11 cm" (Eigenschaften 244/245/246, Artikel ohne Verpackung)
+  function masseAus(d) {
+    var w = {};
+    ((d && d.variationProperties) || []).forEach(function (g) {
+      (g.properties || []).forEach(function (p) {
+        var v = p && p.values && p.values.value;
+        if (p && (p.id === 244 || p.id === 245 || p.id === 246) && v !== null && v !== undefined && String(v).trim() !== "") w[p.id] = String(v).trim().replace(".", ",");
+      });
+    });
+    return (w[244] && w[245] && w[246]) ? w[244] + " × " + w[245] + " × " + w[246] + " cm" : "";
+  }
+  function hoeheMarkieren() {
+    if (!C.aufbau) return;
+    var box = document.querySelector(".single .widget-sticky > .widget-inner");
+    if (!box) return;
+    [].forEach.call(box.children, function (e) {
+      if (e.classList.contains("widget-text") && /^Höhe\b/.test((e.textContent || "").trim())) e.classList.add("osva-hoehe");
+    });
+  }
+  var datenStand = "";
+  function datenBlock() {
+    if (!C.aufbau) return;
+    var box = document.querySelector(".single .widget-sticky > .widget-inner");
+    var an = box && box.querySelector(":scope > .articlenumber");
+    if (!box || !an) return;
+    // Ceres schreibt Nummer und „EAN:“ ohne Leerzeichen hintereinander in den Text
+    var t = (an.textContent || "").replace(/EAN/g, " EAN").replace(/\s+/g, " ");
+    var nr = ((t.match(/Artikelnummer:?\s*(.*?)\s*(?:EAN|$)/) || [])[1] || "").trim();
+    var ean = (t.match(/EAN:?\s*(\d+)/) || [])[1] || "";
+    var pt = box.querySelector(":scope > .producertag");
+    var herst = pt ? (pt.textContent || "").replace(/\s+/g, " ").trim() : "";
+    // Hersteller steht im Shop in Großbuchstaben (CSS): Text selbst ist schon richtig geschrieben
+    var m = masse[aktuell] || "";
+    var stand = [herst, m, nr, ean].join("|");
+    var d = document.getElementById("osva-daten");
+    if (d && stand === datenStand) return;
+    datenStand = stand;
+    if (!d) { d = document.createElement("div"); d.id = "osva-daten"; box.appendChild(d); }
+    function z(icon, text, wert, klein) { return wert ? '<div class="osva-d-z' + (klein ? " klein" : "") + '">' + SVG[icon] + "<span>" + text + " <b>" + esc(wert) + "</b></span></div>" : ""; }
+    d.innerHTML = '<div class="osva-d">' + z("haus", "Hergestellt von", herst) + z("lineal", "Maße (L × B × H)", m) +
+      z("etikett", "Artikelnummer", nr, 1) + z("code", "EAN", ean, 1) + "</div>";
+  }
+
+  // Neue Teile erst einsetzen, wenn Ceres (Vue) die Seite übernommen hat: Eingriffe vorher lassen Vue beim Übernehmen
+  // die ganze Seite neu aufbauen (gemessen 03.11.: Seite sprang, CLS 0,33)
+  function neuTeile() {
+    if (!(window.vueApp && window.vueApp._isMounted)) return;
+    hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise();
+  }
+
+  /* ---------- Handy: Herz im Bild, Kaufleiste, Wischhinweise ---------- */
+  function korbKnopfHaupt() { return document.querySelector(".single .widget-sticky .widget-add-to-basket .btn-primary"); }
+  function herz() {
+    if (!C.aufbau) return;
+    var bild = document.querySelector(".single .widget-item-image");
+    var wl = document.querySelector(".single .widget-sticky .widget-add-to-wish-list button");
+    if (!bild || !wl) return;
+    var h = bild.querySelector(".osva-herz");
+    if (!h) {
+      h = document.createElement("button");
+      h.type = "button"; h.className = "osva-herz"; h.setAttribute("aria-label", "Auf die Wunschliste"); h.innerHTML = SVG.herz;
+      if (getComputedStyle(bild).position === "static") bild.style.position = "relative";
+      bild.appendChild(h);
+      h.addEventListener("click", function () {
+        var b = document.querySelector(".single .widget-sticky .widget-add-to-wish-list button");
+        if (b) b.click();
+        setTimeout(herzStand, 600);
+      });
+    }
+    herzStand();
+  }
+  function herzStand() {
+    var h = document.querySelector(".osva-herz");
+    var b = document.querySelector(".single .widget-sticky .widget-add-to-wish-list button");
+    if (!h || !b) return;
+    var an = /entfernen/i.test(b.getAttribute("data-original-title") || b.getAttribute("title") || "");
+    h.classList.toggle("an", an);
+  }
+  var leiste = null;
+  function kaufleiste() {
+    if (!C.aufbau) return;
+    var k = korbKnopfHaupt();
+    if (!k) return;
+    if (!leiste) {
+      leiste = document.createElement("div");
+      leiste.className = "osva-leiste weg";
+      leiste.innerHTML = '<img alt="" width="44" height="44"><span class="p"></span><button type="button">In den Warenkorb</button>';
+      document.body.appendChild(leiste);
+      document.body.classList.add("osva-mit-leiste");
+      leiste.querySelector("button").addEventListener("click", function () { var kk = korbKnopfHaupt(); if (kk) kk.click(); });
+      window.addEventListener("scroll", leisteLage, { passive: true });
+    }
+    var pr = document.querySelector(".single .widget-sticky .widget-item-price .price");
+    var preis = pr ? (pr.textContent || "").replace(/\s+/g, " ").trim() : "";
+    var p = leiste.querySelector(".p"), soll = esc(preis) + "<small>inkl. MwSt., zzgl. Versand</small>";
+    if (p.innerHTML !== soll) p.innerHTML = soll;
+    var im = document.querySelector(".single .widget-item-image .single-carousel img");
+    var src = im ? (im.currentSrc || im.src || "") : "";
+    var li = leiste.querySelector("img");
+    if (src && li.getAttribute("src") !== src) li.setAttribute("src", src);
+    leisteLage();
+  }
+  function leisteLage() {
+    var k = korbKnopfHaupt();
+    if (!leiste || !k) return;
+    var r = k.getBoundingClientRect();
+    var sichtbar = r.top < window.innerHeight - 70 && r.bottom > 60;
+    if (leiste.classList.contains("weg") === sichtbar && leisteStand !== null) {
+      // Chat und Siegel laden teils später nach: gelegentlich nachziehen
+      if (leisteStand && Date.now() - siegelZeit > 1500) { siegelZeit = Date.now(); siegelHeben(true); }
+      return;
+    }
+    leisteStand = !sichtbar;
+    leiste.classList.toggle("weg", sichtbar);
+    siegelHeben(!sichtbar);
+  }
+  var leisteStand = null, siegelZeit = 0;
+  // Chat, Bewertungssiegel, reCAPTCHA und Datenschutz-Knopf sitzen unten fest; solange die Leiste da ist, rücken sie über sie
+  function siegelHeben(hoch) {
+    if (!window.matchMedia("(max-width: 575.98px)").matches) return;
+    [].forEach.call(document.querySelectorAll("body *"), function (e) {
+      if (e === leiste || e.closest(".osva-leiste, .mobile-navigation")) return;
+      if (e.classList.contains("osva-hoch")) { if (!hoch) e.classList.remove("osva-hoch"); return; }
+      if (!hoch) return;
+      var st = getComputedStyle(e);
+      if (st.position !== "fixed" || e.offsetHeight < 15 || e.offsetHeight > 200) return;
+      if (e.getBoundingClientRect().bottom < window.innerHeight - 160) return;
+      e.classList.add("osva-hoch");
+    });
+  }
+  function amEnde(el) { el.classList.toggle("osva-ende", el.scrollLeft + el.clientWidth >= el.scrollWidth - 4); }
+  function wischHinweise() {
+    if (!C.aufbau) return;
+    var vb = document.querySelector(".single .widget-sticky .widget-attribute .v-s-boxes.images");
+    if (vb && !vb.getAttribute("data-osva-w")) {
+      vb.setAttribute("data-osva-w", "1");
+      vb.addEventListener("scroll", function () { amEnde(vb); }, { passive: true });
+    }
+    if (vb) {
+      amEnde(vb);
+      var n = vb.querySelectorAll(".v-s-box").length;
+      var w = vb.closest(".widget-attribute");
+      var kopf = w && w.querySelector('[data-testing="attribute-name"]');
+      var ziel = kopf ? kopf.parentNode : null;
+      if (ziel && n > 4 && !ziel.querySelector(".osva-anzahl")) {
+        var a = document.createElement("button");
+        a.type = "button"; a.className = "osva-anzahl"; a.textContent = n + " Ausführungen ›";
+        a.addEventListener("click", function () { var v = document.querySelector(".single .widget-sticky .widget-attribute .v-s-boxes.images"); if (v) v.scrollBy({ left: v.clientWidth * 0.8, behavior: "smooth" }); });
+        ziel.insertBefore(a, ziel.firstChild);
+      }
+    }
+  }
+  function empfPunkte(box) {
+    var rh = box.querySelector(".osva-reihe");
+    if (!rh) return;
+    var k = rh.querySelectorAll(".osva-k").length;
+    if (k < 2) return;
+    var pt = document.createElement("div");
+    pt.className = "osva-punkte";
+    for (var i = 0; i < k; i++) pt.appendChild(document.createElement("i"));
+    rh.parentNode.insertBefore(pt, rh.nextSibling);
+    function lauf() {
+      var a = Math.round(rh.scrollLeft / ((rh.scrollWidth - rh.clientWidth) || 1) * (k - 1));
+      [].forEach.call(pt.children, function (e, j) { e.classList.toggle("an", j === a); });
+      amEnde(rh);
+    }
+    rh.addEventListener("scroll", lauf, { passive: true });
+    lauf();
   }
 
   /* ---------- Zubehör und Empfehlungen ---------- */
@@ -290,6 +483,7 @@
       var a = ev.target.closest && ev.target.closest("a.osva-k-name");
       if (a) ga("select_item", C.titelE, eintraege.filter(function (e) { return a.getAttribute("href") === e.t.u; }));
     });
+    empfPunkte(box);
     ga("view_item_list", C.titelE, eintraege);
   }
 
@@ -328,7 +522,9 @@
       namen();
       ausfuehrungenKlappen();
       brotkrumen();
+      if (vid && d && !(vid in masse)) masse[vid] = masseAus(d);
       if (vid && vid !== aktuell) { aktuell = vid; zeigen(vid, d); }
+      neuTeile();
     }, 60);
   });
 
@@ -340,11 +536,13 @@
   var takt = setInterval(function () {
     versuche++;
     namen(); ausfuehrungenKlappen(); abschnitte();
+    neuTeile();
     sterneInKopf([].filter.call(document.querySelectorAll(".osva-ab-kopf"), function (k) { return /bewertung/i.test(k.textContent || ""); })[0]);
     // 20 s lang prüfen, auch wenn die Karten schon stehen: baut Ceres neu auf, werden sie wiederhergestellt
     if (versuche >= 50) clearInterval(takt);
   }, 400);
   abschnitte();
+  if (aktuell && start) masse[aktuell] = masseAus(start);
   window.__osvaDaten = daten;
   zeigen(aktuell, start);
 })();

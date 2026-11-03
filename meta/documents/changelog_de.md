@@ -1,5 +1,13 @@
 # Änderungen
 
+## 0.3.0 (03.11.2026)
+- Handy: Kopf kompakter (Logo 46 px), Seite nicht mehr breiter als der Bildschirm; Kaufbox ohne Karte in der Reihenfolge Name, Höhe, Sterne, Preis, Lieferung, Ausführungen, Warenkorb.
+- Handy: Ausführungen als Wischzeile mit „N Ausführungen ›“ und Ausblendung am Rand; Herz oben rechts im Bild (nutzt die Ceres-Wunschliste); Kaufleiste unten mit Bild, Preis und „In den Warenkorb“ (löst den Ceres-Knopf aus), Siegel/Captcha rücken darüber; Empfehlungen mit Punkten und Ausblendung als Wischhinweis.
+- Rechner und Handy: Höhe direkt unter Name und Ausführung; Hersteller, Maße (L × B × H aus 244/245/246), Artikelnummer und EAN als Zeilen mit Symbolen statt Box.
+- Hauptbild: Rahmen mit runden Ecken schneidet das Bild ab; am Rechner quadratisch nach Spaltenbreite statt 70 % der Fensterhöhe.
+- Bewertungskopf: Sterne in Schriftgröße auf einer Linie; Beschreibung ohne leere Absätze/Zeilenumbrüche am Anfang.
+- Platz für Ausführungen und Spar-Hinweis vorab reserviert, neue Teile erst nach Vue-Übernahme: Handy-CLS 0.
+
 ## 0.2.10 (30.10.2026)
 - Ausführungen: Klick auf eine sichtbare Kachel lässt die übrigen stehen (vorher blitzte die 5. Kachel beim Klick auf die 4. kurz weg). Sichtbare Kacheln werden per eigenem Stil-Block festgelegt, nicht per Klasse an den Kacheln.
 - Klappkarten: nur die Beschreibung offen; Weitere Details, Abmessungen & Gewicht, Bewertungen zugeklappt. Im Kopf „Bewertungen“ Sterne und Anzahl. Klick auf die Bewertungszahl in der Kaufbox klappt die Bewertungen auf und scrollt hin.
