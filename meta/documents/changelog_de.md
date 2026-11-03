@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.5 (03.11.2026)
+- Artikeldaten: Artikelnummer und EAN in derselben Schriftgröße, -farbe und -stärke wie Hersteller, Maße und Gewicht.
+
 ## 0.3.4 (03.11.2026)
 - Tablet: Seite springt beim Laden nicht mehr (CLS 820 px 0,158 → 0,044, 1024 px 0,18 → 0,042). Ursachen: alte Ceres-Liste „Passendes Zubehör“ verschwand erst nach Vue (jetzt per Klasse am <html> von Anfang an aus), und die eigene Zubehörliste schob die Kaufbox nach dem Abruf nach unten (Platz wird vorab nach Anzahl reserviert).
 
