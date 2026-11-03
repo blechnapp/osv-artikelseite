@@ -323,7 +323,7 @@ html.osva-eigen .widget-item-list { display: none !important; }
   body:has(.single.page-content) #page-header .headerlogo { margin: 10px 0 6px !important; text-align: center; }
   body:has(.single.page-content) #page-header .headerlogo img { height: 46px !important; max-height: 46px !important; width: auto !important; }
   body:has(.single.page-content) #page-header .widget-two-col.unfixed > .widget-inner { padding-bottom: 0 !important; }
-  body:has(.single.page-content) { overflow-x: hidden; }
+  /* (0.3.7) kein overflow am body: iPhone-Safari scrollte dann den body statt der Seite, Ceres blendete den Kopf nicht mehr ein (Kay 03.11. live) */
 
   /* Bild: Rahmen geschlossen, Herz oben rechts */
   .single .widget-item-image #thumb-carousel { height: 54px !important; margin-top: 8px; }

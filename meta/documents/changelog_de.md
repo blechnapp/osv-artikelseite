@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.7 (03.11.2026)
+- iPhone: `overflow-x: hidden` am body entfernt. Safari scrollte damit vermutlich den body statt der Seite, Ceres blendete den Kopf nach dem Hochscrollen nicht mehr ein (Kay 03.11. live, Ursache angenommen).
+
 ## 0.3.6 (03.11.2026)
 - iPhone (Safari): Kopf verlor nach dem Scrollen Logo und Symbole, weil `overflow-x: clip` am festen Kopf ihn auf 38 px Höhe abschnitt. Regel entfernt (Seite ist dadurch wie vor 0.3.0 am Handy minimal breiter, eigenes Thema).
 - Chat-Blase wird beim Laden sofort über die Kaufleiste gehoben (60 s lang alle 250 ms geprüft), statt kurz über „In den Warenkorb“ zu liegen.
