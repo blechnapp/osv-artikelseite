@@ -41,6 +41,13 @@
   var aktuell = start && start.variation ? start.variation.id : 0;
   // Ceres baut die Ausführungs-Kacheln erst nach dem Laden auf; Platz vorher freihalten (Klasse am <html>, außerhalb von Vue)
   if (start && start.attributes && start.attributes.length) document.documentElement.classList.add("osva-ausf");
+  if (C.cs && start) {
+    var l0 = listenAus(start);
+    if (C.ceresAus && (l0.z.length || l0.e.length)) document.documentElement.classList.add("osva-eigen");
+    // Platz für die Zubehörliste vorab freihalten (kommt erst nach dem Abruf; schob auf Tablet die Kaufbox nach unten)
+    var nz = Math.min(l0.z.length, C.maxZ || 4);
+    if (nz) { document.documentElement.style.setProperty("--osva-zb-res", (44 + 81 * nz + 24) + "px"); document.documentElement.classList.add("osva-zb-res"); }
+  }
 
   /* ---------- Ausführungen mit Namen ---------- */
   function namen() {
@@ -485,7 +492,7 @@
       var t = daten.t[id];
       if (kachelOk(t) && eintraege.length < C.maxZ) eintraege.push({ id: id, t: t });
     });
-    if (!eintraege.length) return;
+    if (!eintraege.length) { document.documentElement.classList.remove("osva-zb-res"); return; }
     var box = document.createElement("div");
     box.className = "osva-zb";
     box.innerHTML = '<div class="osva-zb-kopf">' + esc(C.titelZ) + "</div>" + eintraege.map(function (e) {
@@ -498,6 +505,7 @@
     }).join("");
     var w = korb.closest(".widget") || korb;
     w.parentNode.insertBefore(box, w.nextSibling);
+    document.documentElement.classList.remove("osva-zb-res");
     eintraege.forEach(function (e) {
       var z = box.querySelector('.osva-zb-zeile[data-id="' + e.id + '"] .osva-korb > span');
       if (!z || !korbKnopf(z, e.id, e.t)) {
@@ -558,8 +566,9 @@
     var l = daten.v[vid];
     var eigen = !!(l && (l.z.length || l.e.length));
     // Ceres-Listen nur ausblenden, wenn diese Ausführung eigene Werte hat
-    document.body.classList.toggle("osva-eigen", eigen && !!C.ceresAus);
-    if (!eigen) return;
+    // am <html>, damit es schon vor Vue gilt (Ceres-Listen verschwanden sonst nach dem Laden: Tablet-CLS 0,08–0,1)
+    document.documentElement.classList.toggle("osva-eigen", eigen && !!C.ceresAus);
+    if (!eigen) { document.documentElement.classList.remove("osva-zb-res"); return; }
     zubehoerZeigen(l.z);
     empfZeigen(l.e);
   }

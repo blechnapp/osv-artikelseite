@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.4 (03.11.2026)
+- Tablet: Seite springt beim Laden nicht mehr (CLS 820 px 0,158 → 0,044, 1024 px 0,18 → 0,042). Ursachen: alte Ceres-Liste „Passendes Zubehör“ verschwand erst nach Vue (jetzt per Klasse am <html> von Anfang an aus), und die eigene Zubehörliste schob die Kaufbox nach dem Abruf nach unten (Platz wird vorab nach Anzahl reserviert).
+
 ## 0.3.3 (03.11.2026)
 - Handy (Meldung Alex 03.11.): Chat-Blase (Tawk) rückt über die Kaufleiste, verdeckt „In den Warenkorb“ nicht mehr. Tawk setzt die Lage inline mit !important, deshalb direkt am iframe.
 - Handy: Ausführungen nicht mehr auf 4 eingeklappt, die Wischzeile zeigt alle; Knopf „Alle N zeigen ›“ klappt alle Kacheln als Raster auf, „Weniger anzeigen“ zurück. Rechner/Tablet unverändert („Alle N Ausführungen zeigen“).
