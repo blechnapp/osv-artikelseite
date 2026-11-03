@@ -440,16 +440,17 @@
       e.classList.add("osva-hoch");
     });
   }
-  function amEnde(el) { el.classList.toggle("osva-ende", el.scrollLeft + el.clientWidth >= el.scrollWidth - 4); }
+  // Ende-Klasse an den äußeren Rahmen (dort liegt die Ausblend-Fläche), nicht an den Scrollbereich
+  function amEnde(el, rahmen) { (rahmen || el).classList.toggle("osva-ende", el.scrollLeft + el.clientWidth >= el.scrollWidth - 4); }
   function wischHinweise() {
     if (!C.aufbau) return;
     var vb = document.querySelector(".single .widget-sticky .widget-attribute .v-s-boxes.images");
     if (vb && !vb.getAttribute("data-osva-w")) {
       vb.setAttribute("data-osva-w", "1");
-      vb.addEventListener("scroll", function () { amEnde(vb); }, { passive: true });
+      vb.addEventListener("scroll", function () { amEnde(vb, vb.closest(".widget-attribute")); }, { passive: true });
     }
     if (vb) {
-      amEnde(vb);
+      amEnde(vb, vb.closest(".widget-attribute"));
       var n = vb.querySelectorAll(".v-s-box").length;
       var w = vb.closest(".widget-attribute");
       var kopf = w && w.querySelector('[data-testing="attribute-name"]');
@@ -480,14 +481,18 @@
     if (!rh) return;
     var k = rh.querySelectorAll(".osva-k").length;
     if (k < 2) return;
+    var wr = document.createElement("div");
+    wr.className = "osva-reihe-w";
+    rh.parentNode.insertBefore(wr, rh);
+    wr.appendChild(rh);
     var pt = document.createElement("div");
     pt.className = "osva-punkte";
     for (var i = 0; i < k; i++) pt.appendChild(document.createElement("i"));
-    rh.parentNode.insertBefore(pt, rh.nextSibling);
+    wr.parentNode.insertBefore(pt, wr.nextSibling);
     function lauf() {
       var a = Math.round(rh.scrollLeft / ((rh.scrollWidth - rh.clientWidth) || 1) * (k - 1));
       [].forEach.call(pt.children, function (e, j) { e.classList.toggle("an", j === a); });
-      amEnde(rh);
+      amEnde(rh, wr);
     }
     rh.addEventListener("scroll", lauf, { passive: true });
     lauf();

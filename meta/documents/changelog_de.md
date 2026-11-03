@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.3.9 (03.11.2026)
+- Handy (Kay 03.11., iPhone 13 Pro): Wischzeilen (Empfehlungen, Ausführungen) ohne mask-image – Safari wischte damit unzuverlässig, teils kein Zurück. Ausblendung jetzt als Fläche darüber (fängt keine Berührung ab), Einrasten weich (proximity), overscroll-behavior contain.
+- MwSt-/Versandhinweis als Fließtext mit Symbol links; unter den Empfehlungen zerfiel er am Handy in drei Spalten.
+
 ## 0.3.8 (03.11.2026)
 - Chat und Trustami fest in der Seite statt schwebend: Block unter „In den Warenkorb“ mit Knopf „Fragen zum Artikel? Chat öffnen ›“ (öffnet Tawk, Blase sonst ausgeblendet) und daneben das Trustami-Siegel. Damit kein Hereinspringen der Chat-Blase über den Warenkorb mehr.
 - Handy: Bild-Platzhalter vor Vue 362 statt 369 px (CLS mit iPhone-Kennung 0,073 → 0,007–0,021).
