@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.3.3 (03.11.2026)
+- Handy (Meldung Alex 03.11.): Chat-Blase (Tawk) rückt über die Kaufleiste, verdeckt „In den Warenkorb“ nicht mehr. Tawk setzt die Lage inline mit !important, deshalb direkt am iframe.
+- Handy: Ausführungen nicht mehr auf 4 eingeklappt, die Wischzeile zeigt alle; Knopf „Alle N zeigen ›“ klappt alle Kacheln als Raster auf, „Weniger anzeigen“ zurück. Rechner/Tablet unverändert („Alle N Ausführungen zeigen“).
+
 ## 0.3.2 (03.11.2026)
 - Abmessungen & Gewicht als Tabelle wie „Weitere Details“: Artikel, Originalverpackung, Versandverpackung (L × B × H), Gewicht Artikel, Gewicht inkl. Versandverpackung; „x“ → „×“, Dezimalkomma. Die Ceres-Absätze bleiben unsichtbar als Datenquelle, die Tabelle folgt dem Wechsel der Ausführung.
 

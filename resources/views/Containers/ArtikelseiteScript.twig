@@ -65,7 +65,15 @@
     var w = document.querySelector(".single .widget-sticky .widget-attribute");
     if (!w) return;
     var n = w.querySelectorAll(".v-s-boxes.images .v-s-box").length;
-    var reihe = window.matchMedia("(max-width: 575.98px)").matches ? 4 : 5;
+    // Handy: alle Kacheln in der Wischzeile, kein Einklappen (sonst blieben nur 4 sichtbar, Alex 03.11.)
+    if (window.matchMedia("(max-width: 575.98px)").matches) {
+      w.classList.remove("osva-v-zu", "osva-v-fest");
+      var alt = w.parentNode.querySelector(".osva-v-mehr");
+      if (alt) alt.parentNode.removeChild(alt);
+      sicht = null;
+      return;
+    }
+    var reihe = 5;
     var kn = w.parentNode.querySelector(".osva-v-mehr");
     if (n <= reihe + 1) { w.classList.remove("osva-v-zu"); if (kn) kn.parentNode.removeChild(kn); return; }
     if (!kn) {
@@ -360,8 +368,18 @@
   // Chat, Bewertungssiegel, reCAPTCHA und Datenschutz-Knopf sitzen unten fest; solange die Leiste da ist, rücken sie über sie
   function siegelHeben(hoch) {
     if (!window.matchMedia("(max-width: 575.98px)").matches) return;
+    // Tawk-Chat setzt Lage und transform inline mit !important (CSS greift nicht): Abstand unten direkt am iframe setzen.
+    // Alex 03.11.: Chat-Blase verdeckte „In den Warenkorb“ in der Leiste.
+    [].forEach.call(document.querySelectorAll('iframe[title="Chat-Widget"]'), function (f) {
+      var st = f.getAttribute("style") || "";
+      var m = st.match(/inset:\s*auto\s+(\d+)px\s+(\d+)px\s+auto/);
+      if (!m) return;
+      if (!f.hasAttribute("data-osva-unten")) f.setAttribute("data-osva-unten", m[2]);
+      var soll = hoch ? (parseInt(f.getAttribute("data-osva-unten"), 10) + 78) : parseInt(f.getAttribute("data-osva-unten"), 10);
+      if (parseInt(m[2], 10) !== soll) f.style.setProperty("inset", "auto " + m[1] + "px " + soll + "px auto", "important");
+    });
     [].forEach.call(document.querySelectorAll("body *"), function (e) {
-      if (e === leiste || e.closest(".osva-leiste, .mobile-navigation")) return;
+      if (e === leiste || e.closest(".osva-leiste, .mobile-navigation") || e.getAttribute("title") === "Chat-Widget") return;
       if (e.classList.contains("osva-hoch")) { if (!hoch) e.classList.remove("osva-hoch"); return; }
       if (!hoch) return;
       var st = getComputedStyle(e);
@@ -385,12 +403,25 @@
       var kopf = w && w.querySelector('[data-testing="attribute-name"]');
       var ziel = kopf ? kopf.parentNode : null;
       if (ziel && n > 4 && !ziel.querySelector(".osva-anzahl")) {
+        // Tipp schaltet zwischen Wischzeile und allen Kacheln (Alex 03.11.: „Alle Ausführungen zeigen“ am Handy nicht anwählbar)
         var a = document.createElement("button");
-        a.type = "button"; a.className = "osva-anzahl"; a.textContent = n + " Ausführungen ›";
-        a.addEventListener("click", function () { var v = document.querySelector(".single .widget-sticky .widget-attribute .v-s-boxes.images"); if (v) v.scrollBy({ left: v.clientWidth * 0.8, behavior: "smooth" }); });
+        a.type = "button"; a.className = "osva-anzahl";
+        a.addEventListener("click", function () {
+          var ww = document.querySelector(".single .widget-sticky .widget-attribute");
+          if (ww) ww.classList.toggle("osva-alle");
+          anzahlText();
+        });
         ziel.insertBefore(a, ziel.firstChild);
       }
+      anzahlText();
     }
+  }
+  function anzahlText() {
+    var a = document.querySelector(".osva-anzahl"), w = document.querySelector(".single .widget-sticky .widget-attribute");
+    if (!a || !w) return;
+    var n = w.querySelectorAll(".v-s-boxes.images .v-s-box").length;
+    var t = w.classList.contains("osva-alle") ? "Weniger anzeigen" : "Alle " + n + " zeigen ›";
+    if (a.textContent !== t) a.textContent = t;
   }
   function empfPunkte(box) {
     var rh = box.querySelector(".osva-reihe");
