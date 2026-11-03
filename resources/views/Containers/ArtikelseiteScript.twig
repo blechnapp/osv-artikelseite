@@ -372,6 +372,14 @@
     siegelHeben(!sichtbar);
   }
   var leisteStand = null, siegelZeit = 0;
+  // Tawk lädt seine Blase erst nach einigen Sekunden; sie lag dann kurz über „In den Warenkorb“ (Kay 03.11. live).
+  // 60 s lang alle 250 ms nur die Chat-Blase prüfen und sofort anheben, solange die Leiste sichtbar ist.
+  var chatTakt = 0, chatUhr = setInterval(function () {
+    if (++chatTakt > 240) { clearInterval(chatUhr); return; }
+    if (!leisteStand) return;
+    var f = document.querySelector('iframe[title="Chat-Widget"]:not([data-osva-unten])');
+    if (f) siegelHeben(true);
+  }, 250);
   // Chat, Bewertungssiegel, reCAPTCHA und Datenschutz-Knopf sitzen unten fest; solange die Leiste da ist, rücken sie über sie
   function siegelHeben(hoch) {
     if (!window.matchMedia("(max-width: 575.98px)").matches) return;

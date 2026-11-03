@@ -319,8 +319,7 @@ html.osva-eigen .widget-item-list { display: none !important; }
 
 /* Handy (Kay 03.11.): Kopf kompakt, Kaufbox ohne Karte, Ausführungen als Wischzeile, Kaufleiste, Herz im Bild */
 @media (max-width: 575.98px) {
-  /* Kopf ragt rechts 15 px über den Bildschirm (Ceres-Raster), dadurch war die ganze Seite zu breit: abschneiden */
-  body:has(.single.page-content) #page-header { overflow-x: clip; }
+  /* (0.3.6) Kein overflow am Kopf: Safari auf dem iPhone schnitt damit nach dem Scrollen Logo und Symbole ab (Kay 03.11. live) */
   body:has(.single.page-content) #page-header .headerlogo { margin: 10px 0 6px !important; text-align: center; }
   body:has(.single.page-content) #page-header .headerlogo img { height: 46px !important; max-height: 46px !important; width: auto !important; }
   body:has(.single.page-content) #page-header .widget-two-col.unfixed > .widget-inner { padding-bottom: 0 !important; }
