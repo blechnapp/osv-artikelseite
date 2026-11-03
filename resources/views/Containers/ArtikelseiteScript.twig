@@ -298,11 +298,50 @@
     });
   }
 
+  /* ---------- Chat und Trustami fest in der Seite statt schwebend (Kay 03.11.) ---------- */
+  // Chat: Tawk-Blase auf der Artikelseite aus, dafür eine Zeile unter dem Warenkorb, die den Chat öffnet.
+  // Trustami: Siegel aus der schwebenden Ecke in die Seite unter die Artikeldaten.
+  var chatZeileDa = false;
+  function chatZeile() {
+    if (!C.aufbau) return;
+    var T = window.Tawk_API;
+    if (!T || typeof T.hideWidget !== "function") return;
+    if (!chatZeileDa) {
+      chatZeileDa = true;
+      try { T.hideWidget(); } catch (x) {}
+      var alt = T.onChatMinimized;
+      T.onChatMinimized = function () { try { T.hideWidget(); } catch (x) {} if (typeof alt === "function") alt(); };
+    } else if (!(T.isChatMaximized && T.isChatMaximized())) {
+      try { if (!T.isChatHidden || !T.isChatHidden()) T.hideWidget(); } catch (x) {}
+    }
+    var box = document.querySelector(".single .widget-sticky > .widget-inner");
+    if (!box || box.querySelector(":scope > .osva-hilfe")) return;
+    // Block „Hilfe & Vertrauen“: Chat-Knopf und daneben das Trustami-Siegel
+    var hilfe = document.createElement("div");
+    hilfe.className = "osva-hilfe";
+    box.appendChild(hilfe);
+    var b = document.createElement("button");
+    b.type = "button"; b.className = "osva-chat";
+    b.innerHTML = '<span class="osva-chat-i"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20.5l1.4-4.7A8 8 0 1 1 21 12z"/></svg></span><span class="osva-chat-t">Fragen zum Artikel?<b>Chat öffnen ›</b></span>';
+    b.addEventListener("click", function () { try { T.showWidget(); T.maximize(); } catch (x) {} });
+    hilfe.appendChild(b);
+  }
+  function trustamiFest() {
+    if (!C.aufbau) return;
+    var t = document.querySelector("body > .widget_container_combi_badge, .widget_container_combi_badge:not(.osva-trust-fest)");
+    var chat = document.querySelector(".single .widget-sticky > .widget-inner > .osva-hilfe");
+    if (!t || !chat || t.classList.contains("osva-trust-fest")) return;
+    if (!t.querySelector("iframe")) return;
+    t.classList.add("osva-trust-fest");
+    [].forEach.call(t.querySelectorAll(".osva-hoch"), function (e) { e.classList.remove("osva-hoch"); });
+    chat.appendChild(t);
+  }
+
   // Neue Teile erst einsetzen, wenn Ceres (Vue) die Seite übernommen hat: Eingriffe vorher lassen Vue beim Übernehmen
   // die ganze Seite neu aufbauen (gemessen 03.11.: Seite sprang, CLS 0,33)
   function neuTeile() {
     if (!(window.vueApp && window.vueApp._isMounted)) return;
-    hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise(); abmTabelle();
+    hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise(); abmTabelle(); chatZeile(); trustamiFest();
   }
 
   /* ---------- Handy: Herz im Bild, Kaufleiste, Wischhinweise ---------- */
@@ -376,9 +415,7 @@
   // 60 s lang alle 250 ms nur die Chat-Blase prüfen und sofort anheben, solange die Leiste sichtbar ist.
   var chatTakt = 0, chatUhr = setInterval(function () {
     if (++chatTakt > 240) { clearInterval(chatUhr); return; }
-    if (!leisteStand) return;
-    var f = document.querySelector('iframe[title="Chat-Widget"]:not([data-osva-unten])');
-    if (f) siegelHeben(true);
+    chatZeile(); trustamiFest();
   }, 250);
   // Chat, Bewertungssiegel, reCAPTCHA und Datenschutz-Knopf sitzen unten fest; solange die Leiste da ist, rücken sie über sie
   function siegelHeben(hoch) {
@@ -394,7 +431,7 @@
       if (parseInt(m[2], 10) !== soll) f.style.setProperty("inset", "auto " + m[1] + "px " + soll + "px auto", "important");
     });
     [].forEach.call(document.querySelectorAll("body *"), function (e) {
-      if (e === leiste || e.closest(".osva-leiste, .mobile-navigation") || e.getAttribute("title") === "Chat-Widget") return;
+      if (e === leiste || e.closest(".osva-leiste, .mobile-navigation, .osva-trust-fest") || e.getAttribute("title") === "Chat-Widget") return;
       if (e.classList.contains("osva-hoch")) { if (!hoch) e.classList.remove("osva-hoch"); return; }
       if (!hoch) return;
       var st = getComputedStyle(e);

@@ -327,6 +327,8 @@ html.osva-eigen .widget-item-list { display: none !important; }
 
   /* Bild: Rahmen geschlossen, Herz oben rechts */
   .single .widget-item-image #thumb-carousel { height: 54px !important; margin-top: 8px; }
+  /* Platzhalter vor Vue passend zur neuen Höhe 300 + 8 + 54 = 362 px (vorher 369, Handy-CLS 0,073 mit iPhone-Kennung) */
+  .single .widget-item-image:empty::before { height: 362px !important; }
   .single .widget-item-image #thumb-carousel .owl-item { width: 54px !important; }
   .osva-herz { position: absolute; top: 10px; right: 10px; z-index: 5; width: 42px; height: 42px; border: 0; border-radius: 50%; background: rgba(255,255,255,.96); box-shadow: 0 2px 10px rgba(12,42,94,.16); display: flex; align-items: center; justify-content: center; color: #0c2a5e; padding: 0; }
   .osva-herz.an svg { fill: #b3261e; stroke: #b3261e; }
@@ -404,5 +406,18 @@ html.osva-eigen .widget-item-list { display: none !important; }
 .single .osva-karten .osva-abm-quelle, .single .osva-karten .widget-inner:has(> p.osva-abm-quelle) { display: none !important; }
 .single .osva-karten table.osva-abm { margin: 4px 0 0; }
 .single .osva-karten table.osva-abm td:first-child { width: 57%; }
+/* Hilfe & Vertrauen unter dem Warenkorb: Chat-Knopf, daneben Trustami (Kay 03.11.) */
+.single .widget-sticky > .widget-inner > .osva-hilfe { order: 30; display: flex; align-items: center; gap: 12px; margin: 0 0 14px; }
+.osva-hilfe .osva-chat { flex: 1; min-width: 0; display: flex; align-items: center; gap: 11px; padding: 9px 12px; border: 1px solid #ead9c2; border-radius: 10px; background: #faf4ea; color: #4a4a4a; text-align: left; cursor: pointer; transition: background .15s, border-color .15s; }
+.osva-hilfe .osva-chat:hover { background: #f5ead9; border-color: #b08052; }
+.osva-hilfe .osva-chat-i { flex: 0 0 36px; height: 36px; border-radius: 50%; background: #0c2a5e; display: flex; align-items: center; justify-content: center; }
+.osva-hilfe .osva-chat-t { display: flex; flex-direction: column; font-size: 13px; line-height: 1.3; }
+.osva-hilfe .osva-chat-t b { font-size: 15px; font-weight: 600; color: #0c2a5e; }
+.osva-hilfe .osva-trust-fest { flex: 0 0 140px; height: 60px; display: block !important; }
+.osva-hilfe .osva-trust-fest iframe { position: static !important; left: auto !important; bottom: auto !important; z-index: auto !important; transform: none !important; }
+@media (max-width: 575.98px) {
+  .single .widget-sticky > .widget-inner > .osva-hilfe { order: 7 !important; margin: -4px 0 14px !important; gap: 10px; }
+  .osva-hilfe .osva-chat-i { flex-basis: 32px; height: 32px; }
+}
 {% endif %}
 </style>

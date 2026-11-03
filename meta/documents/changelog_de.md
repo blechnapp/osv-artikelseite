@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.3.8 (03.11.2026)
+- Chat und Trustami fest in der Seite statt schwebend: Block unter „In den Warenkorb“ mit Knopf „Fragen zum Artikel? Chat öffnen ›“ (öffnet Tawk, Blase sonst ausgeblendet) und daneben das Trustami-Siegel. Damit kein Hereinspringen der Chat-Blase über den Warenkorb mehr.
+- Handy: Bild-Platzhalter vor Vue 362 statt 369 px (CLS mit iPhone-Kennung 0,073 → 0,007–0,021).
+
 ## 0.3.7 (03.11.2026)
 - iPhone: `overflow-x: hidden` am body entfernt. Safari scrollte damit vermutlich den body statt der Seite, Ceres blendete den Kopf nach dem Hochscrollen nicht mehr ein (Kay 03.11. live, Ursache angenommen).
 
