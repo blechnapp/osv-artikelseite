@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.10 (04.11.2026)
+- Ceres-Liste „Ersatzteile“ bleibt sichtbar. Ausgeblendet werden nur noch die alten Listen Zubehör und Empfehlungen (an 443 waren seit 0.3.0 drei Ersatzteile verdeckt).
+
 ## 0.3.9 (03.11.2026)
 - Handy (Kay 03.11., iPhone 13 Pro): Wischzeilen (Empfehlungen, Ausführungen) ohne mask-image – Safari wischte damit unzuverlässig, teils kein Zurück. Ausblendung jetzt als Fläche darüber (fängt keine Berührung ab), Einrasten weich (proximity), overscroll-behavior contain.
 - MwSt-/Versandhinweis als Fließtext mit Symbol links; unter den Empfehlungen zerfiel er am Handy in drei Spalten.

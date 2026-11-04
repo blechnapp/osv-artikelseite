@@ -341,7 +341,15 @@
   // die ganze Seite neu aufbauen (gemessen 03.11.: Seite sprang, CLS 0,33)
   function neuTeile() {
     if (!(window.vueApp && window.vueApp._isMounted)) return;
-    hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise(); abmTabelle(); chatZeile(); trustamiFest();
+    ersatzteileLassen(); hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise(); abmTabelle(); chatZeile(); trustamiFest();
+  }
+
+  // Ceres-Liste „Ersatzteile“ hat im Plugin keinen Ersatz und bleibt sichtbar (04.11.: an 443 waren 3 Ersatzteile verdeckt)
+  function ersatzteileLassen() {
+    [].forEach.call(document.querySelectorAll(".widget-item-list"), function (w) {
+      var t = w.querySelector(".widget-caption, h1, h2, h3, h4");
+      if (t && /ersatzteil/i.test(t.textContent)) w.classList.add("osva-bleibt");
+    });
   }
 
   /* ---------- Handy: Herz im Bild, Kaufleiste, Wischhinweise ---------- */

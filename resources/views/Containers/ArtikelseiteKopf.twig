@@ -86,7 +86,7 @@
   .osva-marke { top: 6px; left: 6px; font-size: 10px; padding: 3px 6px; }
 }
 /* Ceres-Artikellisten der Artikelseite weichen, sobald eigene Werte da sind */
-html.osva-eigen .widget-item-list { display: none !important; }
+html.osva-eigen .widget-item-list:not(.osva-bleibt) { display: none !important; }
 @media (min-width: 576px) { html.osva-zb-res .single .widget-sticky .widget-add-to-basket { margin-bottom: calc(var(--osva-zb-res) + 12px) !important; } }
 {% endif %}
 {% if aufbau %}
