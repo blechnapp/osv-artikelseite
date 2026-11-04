@@ -396,7 +396,7 @@
       leiste.innerHTML = '<img alt="" width="44" height="44"><span class="p"></span><button type="button">In den Warenkorb</button>';
       document.body.appendChild(leiste);
       document.body.classList.add("osva-mit-leiste");
-      leiste.querySelector("button").addEventListener("click", function () { var kk = korbKnopfHaupt(); if (kk) kk.click(); });
+      leiste.querySelector("button").addEventListener("click", korbAusLeiste);
       window.addEventListener("scroll", leisteLage, { passive: true });
     }
     var pr = document.querySelector(".single .widget-sticky .widget-item-price .price");
@@ -408,6 +408,23 @@
     var li = leiste.querySelector("img");
     if (src && li.getAttribute("src") !== src) li.setAttribute("src", src);
     leisteLage();
+  }
+  // Ceres baut den Warenkorb-Knopf am Handy erst, wenn er ins Bild kommt (lazy-hydrate, whenVisible). Stand die Leiste
+  // schon beim Laden da und wurde getippt, ging der Klick ins Leere (04.11. live gemessen). Erst aufbauen lassen, dann klicken.
+  function vueVon(el) { for (var e = el; e; e = e.parentElement) if (e.__vue__) return e.__vue__; return null; }
+  function korbAusLeiste() {
+    var kk = korbKnopfHaupt();
+    if (!kk) return;
+    var vm = vueVon(kk);
+    if (!vm || vm.$options.name !== "lazy-hydrate") { kk.click(); return; }
+    if (typeof vm.hydrate === "function") vm.hydrate();
+    var n = 0;
+    (function warte() {
+      var k2 = korbKnopfHaupt(), v2 = k2 && vueVon(k2);
+      if (k2 && v2 && v2.$options.name !== "lazy-hydrate") { k2.click(); return; }
+      if (++n < 30) setTimeout(warte, 100);
+      else { kk.scrollIntoView({ block: "center" }); }
+    })();
   }
   function leisteLage() {
     var k = korbKnopfHaupt();
@@ -646,9 +663,23 @@
     var ziel = a && document.getElementById("osva-ersatzteile");
     if (!ziel) return;
     ev.preventDefault();
-    var kopf = document.getElementById("page-header");
-    var unten = kopf ? Math.max(0, kopf.getBoundingClientRect().bottom) : 0;
-    window.scrollTo({ top: ziel.getBoundingClientRect().top + window.pageYOffset - unten - 16, behavior: "smooth" });
+    // Erst hinspringen: der Shop-Kopf wird am Handy erst beim Scrollen fest. Dann die Unterkante aller festen Teile oben
+    // messen (Goldleiste, Symbolzeile, Menü) und nachrücken; #page-header allein war am Handy zu kurz (v0.3.12)
+    window.scrollTo(0, ziel.getBoundingClientRect().top + window.pageYOffset - 16);
+    setTimeout(function () {
+      var unten = 0;
+      for (var y = 0; y < 320; y += 8) {
+        // #page-header ist am Handy nur 38 px hoch, die Symbolzeile ragt darüber hinaus: Unterkante der ganzen Kette nehmen
+        var fest = false, kette = 0;
+        for (var el = document.elementFromPoint(window.innerWidth / 2, y); el && el !== document.body; el = el.parentElement) {
+          kette = Math.max(kette, el.getBoundingClientRect().bottom);
+          var pos = getComputedStyle(el).position;
+          if (pos === "fixed" || pos === "sticky") { unten = Math.max(unten, kette); fest = true; break; }
+        }
+        if (!fest && y > unten) break;
+      }
+      if (unten > 0) window.scrollBy(0, -unten);
+    }, 120);
   });
 
   function ersatzZeigen(liste) {
@@ -719,7 +750,7 @@
     neuTeile();
     sterneInKopf([].filter.call(document.querySelectorAll(".osva-ab-kopf"), function (k) { return /bewertung/i.test(k.textContent || ""); })[0]);
     // 20 s lang prüfen, auch wenn die Karten schon stehen: baut Ceres neu auf, werden sie wiederhergestellt
-    if (versuche >= 50) clearInterval(takt);
+    if (versuche >= 50) { clearInterval(takt); if (!document.querySelector(".osva-trust-fest")) document.documentElement.classList.add("osva-trust-frei"); }
   }, 400);
   abschnitte();
   if (aktuell && start) masse[aktuell] = masseAus(start);

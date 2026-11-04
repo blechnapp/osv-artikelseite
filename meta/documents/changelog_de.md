@@ -1,5 +1,10 @@
 # Änderungen
 
+## 0.3.13 (04.11.2026)
+- Handy: Kaufleiste unten legte nichts in den Korb, wenn der Warenkorb-Knopf noch nicht im Bild war (Ceres baut ihn erst dann auf, lazy-hydrate). Leiste lässt ihn jetzt erst aufbauen und klickt dann.
+- Sprung zu den Ersatzteilen misst die ganze Höhe des festen Kopfs (am Handy ragt die Symbolzeile über #page-header hinaus).
+- Trustami auf der Artikelseite unsichtbar, bis es unter dem Warenkorb steht (schwebte 2–3 s über dem Namen).
+
 ## 0.3.12 (04.11.2026)
 - „Ersatzteile zu diesem Artikel ›“ springt so weit, dass die Überschrift „Ersatzteile“ unter dem festen Shop-Kopf sichtbar ist (Kay, iPhone).
 
