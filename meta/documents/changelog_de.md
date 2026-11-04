@@ -1,5 +1,9 @@
 # Änderungen
 
+## 0.3.11 (04.11.2026)
+- Ersatzteile aus Eigenschaft 310 (Items-Tool) als eigene Reihe unter den Empfehlungen, nur bestellbare, bis zu 24. Rechner 4 sichtbar mit Pfeilen, Handy Wischzeile. Im Datenblock Zeile „Ersatzteile zu diesem Artikel ›“.
+- Alte Ceres-Liste „Ersatzteile“ nur noch sichtbar, solange der Artikel kein 310 hat.
+
 ## 0.3.10 (04.11.2026)
 - Ceres-Liste „Ersatzteile“ bleibt sichtbar. Ausgeblendet werden nur noch die alten Listen Zubehör und Empfehlungen (an 443 waren seit 0.3.0 drei Ersatzteile verdeckt).
 

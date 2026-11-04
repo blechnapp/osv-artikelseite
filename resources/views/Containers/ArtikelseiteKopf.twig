@@ -73,7 +73,20 @@
 .osva-k-preis del { font-size: 13px; font-weight: 400; color: #8a8a8a; margin-left: 6px; }
 .osva-marke { position: absolute; top: 10px; left: 10px; z-index: 3; background: #b08052; color: #fff; font-size: 11.5px; font-weight: 700; letter-spacing: .03em; padding: 4px 9px; border-radius: 3px; }
 @media (max-width: 991.98px) { .osva-reihe { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; } }
+/* Mehr als 4 Karten (Ersatzteile, bis 12): Rechner 4 sichtbar, Tablet 2, Rest über Pfeile; Handy wie Empfehlungen per Wischen */
+.osva-empf { position: relative; }
+.osva-reihe.osva-viele { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 2px 2px 10px; }
+.osva-reihe.osva-viele::-webkit-scrollbar { display: none; }
+.osva-reihe.osva-viele .osva-k { flex: 0 0 calc((100% - 60px) / 4); scroll-snap-align: start; }
+.osva-pf { position: absolute; top: 2px; width: 36px; height: 36px; border-radius: 50%; border: 1px solid #d9cfc0; background: #fff; color: #0c2a5e; font-size: 22px; line-height: 1; cursor: pointer; }
+.osva-pf-l { right: 46px; }
+.osva-pf-r { right: 0; }
+.osva-pf:hover { border-color: #0c2a5e; }
+.osva-d-et { color: #0c2a5e !important; text-decoration: underline; text-underline-offset: 2px; }
+@media (max-width: 991.98px) { .osva-reihe.osva-viele .osva-k { flex-basis: calc((100% - 12px) / 2); } }
 @media (max-width: 575.98px) {
+  .osva-pf { display: none; }
+  .osva-reihe.osva-viele .osva-k { flex-basis: 43%; }
   .osva-empf h2 { font-size: 22px; }
   .osva-reihe { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -15px; padding: 2px 15px 8px; }
   .osva-reihe::-webkit-scrollbar { display: none; }

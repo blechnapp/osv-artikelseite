@@ -15,16 +15,18 @@
     ((d && d.variationProperties) || []).forEach(function (g) {
       (g.properties || []).forEach(function (p) {
         var v = p && p.values && p.values.value;
-        if (p && (p.id === 302 || p.id === 303) && typeof v === "string") w[p.id] = v;
+        if (p && (p.id === 302 || p.id === 303 || p.id === 310) && typeof v === "string") w[p.id] = v;
       });
     });
-    var z = [], e = [];
+    var z = [], e = [], r = [];
     String(w[302] || "").split(",").forEach(function (t) { var id = parseInt(t, 10); if (id > 0 && z.indexOf(id) < 0) z.push(id); });
+    // 310 Ersatzteile (Kay 04.11.2026): bis zu 24 variationIds (Items-Tool schreibt bis 18), das Items-Tool füllt sie aus „Ersatzteil für“ (307–309)
+    String(w[310] || "").split(",").forEach(function (t) { var id = parseInt(t, 10); if (id > 0 && r.indexOf(id) < 0 && r.length < 24) r.push(id); });
     String(w[303] || "").split(",").forEach(function (t) {
       t = t.trim(); var id = parseInt(t.replace(/^\*/, ""), 10);
       if (id > 0) e.push([id, t.charAt(0) === "*" ? 1 : 0]);
     });
-    return { z: z, e: e };
+    return { z: z, e: e, r: r };
   }
   // Datenblock der gewählten Variante beim Laden (JSON mit total und documents)
   function startDaten() {
@@ -43,7 +45,7 @@
   if (start && start.attributes && start.attributes.length) document.documentElement.classList.add("osva-ausf");
   if (C.cs && start) {
     var l0 = listenAus(start);
-    if (C.ceresAus && (l0.z.length || l0.e.length)) document.documentElement.classList.add("osva-eigen");
+    if (C.ceresAus && (l0.z.length || l0.e.length || l0.r.length)) document.documentElement.classList.add("osva-eigen");
     // Platz für die Zubehörliste vorab freihalten (kommt erst nach dem Abruf; schob auf Tablet die Kaufbox nach unten)
     var nz = Math.min(l0.z.length, C.maxZ || 4);
     if (nz) { document.documentElement.style.setProperty("--osva-zb-res", (44 + 81 * nz + 24) + "px"); document.documentElement.classList.add("osva-zb-res"); }
@@ -218,6 +220,7 @@
     lineal: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 15.5 15.5 3 21 8.5 8.5 21z"/><path d="M7 12l2 2M10 9l1.5 1.5M13 6l2 2"/></svg>',
     gewicht: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="6" r="2.5"/><path d="M6.5 9h11l2.5 11H4z"/></svg>',
     etikett: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" aria-hidden="true"><path d="M20.6 13.4 13.4 20.6a2 2 0 0 1-2.8 0L3 13V3h10l7.6 7.6a2 2 0 0 1 0 2.8z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>',
+    werkzeug: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M14.7 6.3a4 4 0 0 0 5 5L21 13l-8 8-3-3 8-8-1.3-1.3a4 4 0 0 1-5-5L13 2z"/><path d="M3 21l6-6"/></svg>',
     code: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#b08052" stroke-width="2" aria-hidden="true"><path d="M3 5v14M7 5v14M10 5v14M14 5v14M17 5v14M21 5v14"/></svg>',
     herz: '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 1 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg>'
   };
@@ -240,7 +243,7 @@
       if (e.classList.contains("widget-text") && /^Höhe\b/.test((e.textContent || "").trim())) e.classList.add("osva-hoehe");
     });
   }
-  var datenStand = "";
+  var datenStand = "", etAnzahl = 0;
   function datenBlock() {
     if (!C.aufbau) return;
     var box = document.querySelector(".single .widget-sticky > .widget-inner");
@@ -254,14 +257,15 @@
     var herst = pt ? (pt.textContent || "").replace(/\s+/g, " ").trim() : "";
     // Hersteller steht im Shop in Großbuchstaben (CSS): Text selbst ist schon richtig geschrieben
     var mg = masse[aktuell] || {}, m = mg.m || "", gw = mg.g || "";
-    var stand = [herst, m, gw, nr, ean].join("|");
+    var stand = [herst, m, gw, nr, ean, etAnzahl].join("|");
     var d = document.getElementById("osva-daten");
     if (d && stand === datenStand) return;
     datenStand = stand;
     if (!d) { d = document.createElement("div"); d.id = "osva-daten"; box.appendChild(d); }
     function z(icon, text, wert, klein) { return wert ? '<div class="osva-d-z' + (klein ? " klein" : "") + '">' + SVG[icon] + "<span>" + text + " <b>" + esc(wert) + "</b></span></div>" : ""; }
     d.innerHTML = '<div class="osva-d">' + z("haus", "Hergestellt von", herst) + z("lineal", "Maße (L × B × H)", m) + z("gewicht", "Gewicht", gw) +
-      z("etikett", "Artikelnummer", nr, 1) + z("code", "EAN", ean, 1) + "</div>";
+      z("etikett", "Artikelnummer", nr, 1) + z("code", "EAN", ean, 1) +
+      (etAnzahl ? '<a class="osva-d-z osva-d-et" href="#osva-ersatzteile">' + SVG.werkzeug + "<span>Ersatzteile zu diesem Artikel &rsaquo;</span></a>" : "") + "</div>";
   }
 
   /* ---------- Abmessungen & Gewicht als Tabelle wie „Weitere Details“ (Kay 03.11.) ---------- */
@@ -344,11 +348,12 @@
     ersatzteileLassen(); hoeheMarkieren(); datenBlock(); herz(); kaufleiste(); wischHinweise(); abmTabelle(); chatZeile(); trustamiFest();
   }
 
-  // Ceres-Liste „Ersatzteile“ hat im Plugin keinen Ersatz und bleibt sichtbar (04.11.: an 443 waren 3 Ersatzteile verdeckt)
+  // Alte Ceres-Liste „Ersatzteile“ bleibt sichtbar, solange das Plugin für den Artikel keine eigenen (310) zeigt
+  // (04.11.: an 443 waren 3 Ersatzteile verdeckt); fällt weg, wenn die Ceres-Listen aus dem ShopBuilder entfernt sind
   function ersatzteileLassen() {
     [].forEach.call(document.querySelectorAll(".widget-item-list"), function (w) {
       var t = w.querySelector(".widget-caption, h1, h2, h3, h4");
-      if (t && /ersatzteil/i.test(t.textContent)) w.classList.add("osva-bleibt");
+      if (t && /ersatzteil/i.test(t.textContent)) w.classList.toggle("osva-bleibt", !etAnzahl);
     });
   }
 
@@ -585,9 +590,16 @@
       if (kachelOk(t) && eintraege.length < C.maxE) eintraege.push({ id: paar[0], t: t, stern: paar[1] });
     });
     if (!eintraege.length) return;
+    reiheZeigen("osva-empf", C.titelE, eintraege, null);
+  }
+
+  // Karten-Reihe für Empfehlungen und Ersatzteile; „nach“ = Element, hinter das die Reihe kommt
+  function reiheZeigen(klasse, titel, eintraege, nach) {
     var box = document.createElement("section");
-    box.className = "osva-empf";
-    box.innerHTML = "<h2>" + esc(C.titelE) + '</h2><div class="osva-reihe">' + eintraege.map(function (e) {
+    box.className = klasse;
+    var viele = eintraege.length > 4;
+    box.innerHTML = "<h2>" + esc(titel) + "</h2>" + (viele ? '<button type="button" class="osva-pf osva-pf-l" aria-label="Zurück">&lsaquo;</button><button type="button" class="osva-pf osva-pf-r" aria-label="Weiter">&rsaquo;</button>' : "") +
+      '<div class="osva-reihe' + (viele ? " osva-viele" : "") + '">' + eintraege.map(function (e) {
       var t = e.t;
       // ganze Karte klickbar über den Namens-Link (::after über die Karte), Warenkorb-Knopf liegt darüber
       return '<div class="osva-k" data-id="' + e.id + '">' + (e.stern ? '<span class="osva-marke">' + esc(C.marke) + "</span>" : "") +
@@ -598,12 +610,14 @@
         '<span class="osva-korb"><span></span></span></span>' +
         '<span class="osva-k-mehr">Zum Artikel &rsaquo;</span></span></div>';
     }).join("") + "</div>";
-    // an die Stelle der Ceres-Listen, sonst unter die Reiter
-    var ziel = document.querySelector(".widget-item-list") || document.querySelector(".widget-feedback") || document.querySelector(".widget-tab");
-    if (ziel) {
+    if (nach) nach.parentNode.insertBefore(box, nach.nextSibling);
+    else {
+      // an die Stelle der Ceres-Listen, sonst unter die Reiter
+      var ziel = document.querySelector(".widget-item-list") || document.querySelector(".widget-feedback") || document.querySelector(".widget-tab");
+      if (!ziel) return null;
       ziel = ziel.closest(".widget") || ziel;
       ziel.parentNode.insertBefore(box, ziel);
-    } else return;
+    }
     eintraege.forEach(function (e) {
       var z = box.querySelector('.osva-k[data-id="' + e.id + '"] .osva-korb > span');
       if (!z || !korbKnopf(z, e.id, e.t)) {
@@ -612,23 +626,45 @@
       }
     });
     box.addEventListener("click", function (ev) {
+      var pf = ev.target.closest && ev.target.closest(".osva-pf");
+      if (pf) {
+        var rh = box.querySelector(".osva-reihe");
+        rh.scrollBy({ left: (pf.classList.contains("osva-pf-l") ? -1 : 1) * rh.clientWidth, behavior: "smooth" });
+        return;
+      }
       var a = ev.target.closest && ev.target.closest("a.osva-k-name");
-      if (a) ga("select_item", C.titelE, eintraege.filter(function (e) { return a.getAttribute("href") === e.t.u; }));
+      if (a) ga("select_item", titel, eintraege.filter(function (e) { return a.getAttribute("href") === e.t.u; }));
     });
     empfPunkte(box);
-    ga("view_item_list", C.titelE, eintraege);
+    ga("view_item_list", titel, eintraege);
+    return box;
+  }
+
+  function ersatzZeigen(liste) {
+    var eintraege = [];
+    (liste || []).forEach(function (id) {
+      var t = daten.t[id];
+      if (kachelOk(t)) eintraege.push({ id: id, t: t });
+    });
+    var neu = eintraege.length;
+    if (neu) {
+      var box = reiheZeigen("osva-empf osva-et", "Ersatzteile", eintraege, document.querySelector(".osva-empf"));
+      if (box) box.id = "osva-ersatzteile"; else neu = 0;
+    }
+    if (neu !== etAnzahl) { etAnzahl = neu; datenBlock(); }
   }
 
   function listenZeigen(vid) {
     aufraeumen();
     var l = daten.v[vid];
-    var eigen = !!(l && (l.z.length || l.e.length));
+    var eigen = !!(l && (l.z.length || l.e.length || l.r.length));
     // Ceres-Listen nur ausblenden, wenn diese Ausführung eigene Werte hat
     // am <html>, damit es schon vor Vue gilt (Ceres-Listen verschwanden sonst nach dem Laden: Tablet-CLS 0,08–0,1)
     document.documentElement.classList.toggle("osva-eigen", eigen && !!C.ceresAus);
-    if (!eigen) { document.documentElement.classList.remove("osva-zb-res"); return; }
+    if (!eigen) { document.documentElement.classList.remove("osva-zb-res"); if (etAnzahl) { etAnzahl = 0; datenBlock(); } return; }
     zubehoerZeigen(l.z);
     empfZeigen(l.e);
+    ersatzZeigen(l.r);
   }
 
   // Kacheldaten (Bild, Preis, Warenkorb) für die genannten Varianten holen, nur was noch fehlt
@@ -637,7 +673,7 @@
     if (d && !daten.v[vid]) daten.v[vid] = listenAus(d);
     var l = daten.v[vid];
     if (!l) return;
-    var fehlt = l.z.concat(l.e.map(function (p) { return p[0]; })).filter(function (id) { return !(id in daten.t); });
+    var fehlt = l.z.concat(l.e.map(function (p) { return p[0]; }), l.r).filter(function (id, i, a) { return a.indexOf(id) === i; }).filter(function (id) { return !(id in daten.t); });
     if (!fehlt.length) { if (vid === aktuell) listenZeigen(vid); return; }
     fetch("/rest/osv-artikelseite/listen?t=" + fehlt.sort(function (a, b) { return a - b; }).join(","), { credentials: "same-origin" })
       .then(function (r) { return r.json(); })
