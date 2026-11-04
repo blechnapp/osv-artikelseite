@@ -640,6 +640,17 @@
     return box;
   }
 
+  // Sprung zu den Ersatzteilen: Überschrift unter dem festen Shop-Kopf, nicht dahinter (Kay 04.11., iPhone)
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest && ev.target.closest("a.osva-d-et");
+    var ziel = a && document.getElementById("osva-ersatzteile");
+    if (!ziel) return;
+    ev.preventDefault();
+    var kopf = document.getElementById("page-header");
+    var unten = kopf ? Math.max(0, kopf.getBoundingClientRect().bottom) : 0;
+    window.scrollTo({ top: ziel.getBoundingClientRect().top + window.pageYOffset - unten - 16, behavior: "smooth" });
+  });
+
   function ersatzZeigen(liste) {
     var eintraege = [];
     (liste || []).forEach(function (id) {

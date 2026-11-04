@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.12 (04.11.2026)
+- „Ersatzteile zu diesem Artikel ›“ springt so weit, dass die Überschrift „Ersatzteile“ unter dem festen Shop-Kopf sichtbar ist (Kay, iPhone).
+
 ## 0.3.11 (04.11.2026)
 - Ersatzteile aus Eigenschaft 310 (Items-Tool) als eigene Reihe unter den Empfehlungen, nur bestellbare, bis zu 24. Rechner 4 sichtbar mit Pfeilen, Handy Wischzeile. Im Datenblock Zeile „Ersatzteile zu diesem Artikel ›“.
 - Alte Ceres-Liste „Ersatzteile“ nur noch sichtbar, solange der Artikel kein 310 hat.
