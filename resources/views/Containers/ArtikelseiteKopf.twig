@@ -390,6 +390,8 @@ html.osva-eigen .widget-item-list:not(.osva-bleibt) { display: none !important; 
   /* Kaufleiste unten, solange der Warenkorb-Knopf nicht im Bild ist */
   .osva-leiste { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1040; display: flex; align-items: center; gap: 12px; padding: 10px 14px calc(10px + env(safe-area-inset-bottom)); background: rgba(255,255,255,.97); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); box-shadow: 0 -4px 18px rgba(12,42,94,.12); box-sizing: border-box; transition: transform .2s; }
   .osva-leiste.weg { transform: translateY(110%); }
+  /* Warenkorbvorschau offen (Ceres setzt body.basket-open): Leiste weg, sonst verdeckt sie „Warenkorb“ und „Zur Kasse“ (Kay 11.11.) */
+  body.basket-open .osva-leiste { display: none !important; }
   .osva-leiste img { width: 44px; height: 44px; object-fit: contain; border-radius: 6px; border: 1px solid #eee8de; background: #fff; }
   .osva-leiste .p { font-size: 19px; font-weight: 700; color: #0c2a5e; line-height: 1.1; white-space: nowrap; }
   .osva-leiste .p small { display: block; font-size: 11px; font-weight: 400; color: #6b6b6b; }

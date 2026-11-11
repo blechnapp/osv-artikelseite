@@ -1,5 +1,8 @@
 # Änderungen
 
+## 0.3.14 (11.11.2026)
+- Handy: Kaufleiste verschwindet, solange die Warenkorbvorschau offen ist. Sie lag seit 0.3.9 über den Knöpfen „Warenkorb“ und „Kasse“ der Vorschau (Tipp auf das Warenkorb-Symbol oben), man kam von dort nicht zur Kasse.
+
 ## 0.3.13 (04.11.2026)
 - Handy: Kaufleiste unten legte nichts in den Korb, wenn der Warenkorb-Knopf noch nicht im Bild war (Ceres baut ihn erst dann auf, lazy-hydrate). Leiste lässt ihn jetzt erst aufbauen und klickt dann.
 - Sprung zu den Ersatzteilen misst die ganze Höhe des festen Kopfs (am Handy ragt die Symbolzeile über #page-header hinaus).
